@@ -39,7 +39,7 @@ public class HanLPIndicesAnalysis extends AbstractComponent {
 
                     @Override
                     public Tokenizer create() {
-                        return new HanLPTokenizer(HanLP.newSegment(), null, enablePorterStemming);
+                        return new HanLPTokenizer(HanLP.newSegment().enableOffset(true), null, enablePorterStemming);
                     }
                 }));
 
@@ -159,7 +159,7 @@ public class HanLPIndicesAnalysis extends AbstractComponent {
 
                     @Override
                     public Tokenizer create() {
-                        return new HanLPTokenizer(new DoubleArrayTrieSegment().enableCustomDictionary(true), null,
+                        return new HanLPTokenizer(new DoubleArrayTrieSegment().enableCustomDictionary(true).enablePartOfSpeechTagging(true), null,
                                 enablePorterStemming);
                     }
                 }));
