@@ -4,12 +4,6 @@
         <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
-    <fileSets>
-        <fileSet>
-            <directory>${project.basedir}/config</directory>
-            <outputDirectory>/config</outputDirectory>
-        </fileSet>
-    </fileSets>
 
     <files>
         <file>
@@ -32,8 +26,15 @@
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
-                <include>org.apache.httpcomponents:httpclient</include>
+                <include>com.hankcs:hanlp</include>
+                <include>com.hankcs.nlp:hanlp-lucene-plugin</include>
             </includes>
+            <excludes>
+                <exclude>org.apache.lucene:lucene-core</exclude>
+                <exclude>org.apache.lucene:lucene-analyzers-common</exclude>
+                <exclude>org.apache.lucene:lucene-queryparser</exclude>
+                <exclude>org.apache.lucene:lucene-sandbox</exclude>
+            </excludes>
         </dependencySet>
     </dependencySets>
 </assembly>
