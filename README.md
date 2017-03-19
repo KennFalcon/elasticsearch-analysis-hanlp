@@ -12,7 +12,7 @@ git checkout tags/{version}
 
 mvn package
 
-copy and unzip target/releases/elasticsearch-analysis-hanlp-{version}.zip to your-es-root/plugins/ik
+copy and unzip target/releases/elasticsearch-analysis-hanlp-{version}.zip to your-es-root/plugins/hanlp
 
 2. 安装数据包
 
@@ -41,6 +41,10 @@ ES_CLASSPATH="$ES_HOME/lib/elasticsearch-2.x.x.jar:$ES_HOME/lib/*:$ES_HOME/confi
 hanlp: hanlp默认分词
 
 hanlp_standard: 标准分词
+
+hanlp_index: 索引分词
+
+hanlp_nlp: NLP分词
 
 hanlp_n_short: N-最短路分词
 
