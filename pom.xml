@@ -5,7 +5,7 @@
     <name>elasticsearch-analysis-hanlp</name>
     <groupId>org.elasticsearch</groupId>
     <artifactId>elasticsearch-analysis-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
     <description>HanLP Analyzer for ElasticSearch</description>
     <url>http://maven.apache.org</url>
