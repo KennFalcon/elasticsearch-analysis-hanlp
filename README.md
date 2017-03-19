@@ -1,7 +1,7 @@
 # elasticsearch-analysis-hanlp
 HanLP Analyzer for ElasticSearch
 
-此分词器基于HanLP，提供了HanLP中大部分的分词方式。暂只支持Elasticsearch 2.x.x。(http://www.hankcs.com/nlp）
+此分词器基于HanLP，提供了HanLP中大部分的分词方式。暂只支持Elasticsearch 5.x.x。(http://www.hankcs.com/nlp）
 
 ## 安装方式
 1. 编译
@@ -12,7 +12,7 @@ git checkout tags/{version}
 
 mvn package
 
-copy and unzip target/releases/elasticsearch-analysis-hanlp-{version}.zip to your-es-root/plugins/ik
+copy and unzip target/releases/elasticsearch-analysis-hanlp-{version}.zip to your-es-root/plugins/hanlp
 
 2. 安装数据包
 
@@ -28,11 +28,11 @@ copy and unzip target/releases/elasticsearch-analysis-hanlp-{version}.zip to you
 
 将下行：
 
-ES_CLASSPATH="$ES_HOME/lib/elasticsearch-2.x.x.jar:$ES_HOME/lib/*"
+ES_CLASSPATH="$ES_HOME/lib/elasticsearch-5.x.x.jar:$ES_HOME/lib/*"
 
 修改为
 
-ES_CLASSPATH="$ES_HOME/lib/elasticsearch-2.x.x.jar:$ES_HOME/lib/*:$ES_HOME/config/hanlp/config"
+ES_CLASSPATH="$ES_HOME/lib/elasticsearch-5.x.x.jar:$ES_HOME/lib/*:$ES_HOME/config/hanlp/config"
 
 3. 重启Elasticsearch
 
@@ -41,6 +41,10 @@ ES_CLASSPATH="$ES_HOME/lib/elasticsearch-2.x.x.jar:$ES_HOME/lib/*:$ES_HOME/confi
 hanlp: hanlp默认分词
 
 hanlp_standard: 标准分词
+
+hanlp_index: 索引分词
+
+hanlp_index: NLP分词
 
 hanlp_n_short: N-最短路分词
 
