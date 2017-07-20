@@ -1,0 +1,4 @@
+grant {
+  // HanLP data directories
+  permission java.io.FilePermission "<<ALL FILES>>", "read,write";
+};
