@@ -1,22 +1,15 @@
 package com.hankcs.cfg;
 
-import com.hankcs.hanlp.utility.Predefine;
+import com.hankcs.dic.Dictionary;
 import org.elasticsearch.common.inject.Inject;
-import org.elasticsearch.common.io.PathUtils;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
-import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
-
-import java.io.File;
-import java.nio.file.Path;
 
 public class Configuration {
 
     private Environment environment;
 
     private Settings settings;
-
-    private final String CONFIG_FILE_NAME = "hanlp.properties";
 
     private boolean enablePorterStemming;
 
@@ -58,11 +51,7 @@ public class Configuration {
         this.enableTraditionalChineseMode = settings.get("enable_traditional_chinese_mode", "false").equals("true");
         this.enableStopDictionary = settings.get("enable_stop_dictionary", "false").equals("true");
         this.enablePartOfSpeechTagging = settings.get("enable_part_of_speech_tagging", "false").equals("true");
-        Predefine.HANLP_PROPERTIES_PATH = getConfigInPluginDir().resolve("hanlp.properties").toString();
-    }
-
-    public Path getConfigInPluginDir() {
-        return PathUtils.get(new File(AnalysisHanLPPlugin.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(), new String[]{"config"}).toAbsolutePath();
+        Dictionary.initial();
     }
 
     public Environment getEnvironment() {
