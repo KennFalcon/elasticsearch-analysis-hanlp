@@ -14,13 +14,21 @@ HanLP Analyzer for ElasticSearch
 | 5.2.2 | 5.2.2 |
 
 安装方式：
+
 方式一
+
    a. 下载对应的release安装包
+   
    b. 将相关内容解压至*ES_HOME*/plugins/analysis-hanlp
+   
    c. 将config目录下的文件移动至*ES_HOME*/config/analysis-hanlp
+   
    d. 解压出的data目录为词典目录
+   
 方式二
+
    a. 使用elasticsearch插件脚本安装command如下：
+   
       `bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v5.2.2/elasticsearch-analysis-hanlp-5.2.2.zip  
 
 2. 安装数据包
