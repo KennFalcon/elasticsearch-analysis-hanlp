@@ -10,7 +10,7 @@ HanLP Analyzer for ElasticSearch
 
 | Plugin version | Elastic version |
 | --- | --- |
-| master | 5.x |
+| master | 6.x |
 | 5.2.2 | 5.2.2 |
 
 安装方式：
@@ -29,7 +29,7 @@ HanLP Analyzer for ElasticSearch
 
    a. 使用elasticsearch插件脚本安装command如下：
    
-   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v5.2.2/elasticsearch-analysis-hanlp-5.2.2.zip`
+   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.2.2/elasticsearch-analysis-hanlp-6.2.2.zip`
 
 2. 安装数据包
 
@@ -69,7 +69,11 @@ hanlp_speed: 极速词典分词
 ## 样例
 
 ```
-POST http://localhost:9200/twitter2/_analyze?analyzer=hanlp&pretty=true&text=美国阿拉斯加州发生8.0级地震
+POST http://localhost:9200/twitter2/_analyze
+{
+  "text": "美国阿拉斯加州发生8.0级地震",
+  "tokenizer": "hanlp"
+}
 ```
 
 ```
