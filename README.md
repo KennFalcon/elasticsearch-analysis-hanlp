@@ -29,7 +29,7 @@ HanLP Analyzer for ElasticSearch
 
    a. 使用elasticsearch插件脚本安装command如下：
    
-      `bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v5.2.2/elasticsearch-analysis-hanlp-5.2.2.zip  
+   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v5.2.2/elasticsearch-analysis-hanlp-5.2.2.zip`
 
 2. 安装数据包
 
