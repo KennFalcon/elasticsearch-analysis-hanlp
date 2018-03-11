@@ -51,7 +51,7 @@ public class Configuration {
         this.enableTraditionalChineseMode = settings.get("enable_traditional_chinese_mode", "false").equals("true");
         this.enableStopDictionary = settings.get("enable_stop_dictionary", "false").equals("true");
         this.enablePartOfSpeechTagging = settings.get("enable_part_of_speech_tagging", "false").equals("true");
-        Dictionary.initial();
+        Dictionary.initial(this);
     }
 
     public Environment getEnvironment() {

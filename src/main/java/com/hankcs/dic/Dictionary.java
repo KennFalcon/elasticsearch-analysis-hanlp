@@ -1,5 +1,6 @@
 package com.hankcs.dic;
 
+import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.utility.Predefine;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.common.io.PathUtils;
@@ -25,7 +26,10 @@ public class Dictionary {
      * 词典单子实例
      */
     private static Dictionary singleton;
-
+    /**
+     * 配置文件目录
+     */
+    private Path configDir;
 
     private final String CONFIG_FILE_NAME = "hanlp.properties";
 
@@ -33,25 +37,22 @@ public class Dictionary {
 
     private static ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
 
-    private Dictionary() {
-        Predefine.HANLP_PROPERTIES_PATH = getConfigInPluginDir().resolve(CONFIG_FILE_NAME).toString();
+    private Dictionary(Configuration configuration) {
+        configDir = configuration.getEnvironment().configFile().resolve(AnalysisHanLPPlugin.PLUGIN_NAME);
+        Predefine.HANLP_PROPERTIES_PATH = configDir.resolve(CONFIG_FILE_NAME).toString();
         logger.debug("hanlp properties path: {}", Predefine.HANLP_PROPERTIES_PATH);
     }
 
-    public static synchronized Dictionary initial() {
+    public static synchronized Dictionary initial(Configuration configuration) {
         if (singleton == null) {
             synchronized (Dictionary.class) {
                 if (singleton == null) {
-                    singleton = new Dictionary();
+                    singleton = new Dictionary(configuration);
                     pool.scheduleAtFixedRate(new Monitor(), 10, 60, TimeUnit.SECONDS);
                     return singleton;
                 }
             }
         }
         return singleton;
-    }
-
-    public Path getConfigInPluginDir() {
-        return PathUtils.get(new File(AnalysisHanLPPlugin.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent(), new String[]{"config"}).toAbsolutePath();
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <assembly>
+    <id>analysis-hanlp-release</id>
     <formats>
         <format>zip</format>
     </formats>
@@ -8,6 +9,10 @@
         <fileSet>
             <directory>${project.basedir}/config</directory>
             <outputDirectory>elasticsearch/config</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/data</directory>
+            <outputDirectory>elasticsearch/data</outputDirectory>
         </fileSet>
     </fileSets>
     <files>
