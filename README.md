@@ -5,7 +5,7 @@ HanLP Analyzer for ElasticSearch
 
 ## 版本对应
 
-1. 下载ES对应Plugin Release版本
+1. 下载安装ES对应Plugin Release版本
 
 
 | Plugin version | Elastic version |
@@ -13,8 +13,15 @@ HanLP Analyzer for ElasticSearch
 | master | 5.x |
 | 5.2.2 | 5.2.2 |
 
-
-copy and unzip elasticsearch-analysis-hanlp-{version}.zip to *ES_HOME*/plugins/elasticsearch-analysis-hanlp/
+安装方式：
+方式一
+   a. 下载对应的release安装包
+   b. 将相关内容解压至*ES_HOME*/plugins/analysis-hanlp
+   c. 将config目录下的文件移动至*ES_HOME*/config/analysis-hanlp
+   d. 解压出的data目录为词典目录
+方式二
+   a. 使用elasticsearch插件脚本安装command如下：
+      `bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v5.2.2/elasticsearch-analysis-hanlp-5.2.2.zip  
 
 2. 安装数据包
 
@@ -26,7 +33,7 @@ release包中存放的为HanLP源码中默认的分词数据，若要下载完�
 
 修改 *ES_HOME*/config 目录下的 jvm.options 文件添加一行（读取hanlp.properties配置文件需要）
 
--Djava.security.policy=file:///*ES_HOME*/plugins/elasticsearch-hanlp/plugin-security.policy
+-Djava.security.policy=file:///*ES_HOME*/plugins/analysis-hanlp/plugin-security.policy
 
 
 4. 重启Elasticsearch
