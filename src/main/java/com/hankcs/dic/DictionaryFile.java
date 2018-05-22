@@ -39,11 +39,14 @@ public class DictionaryFile {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         DictionaryFile that = (DictionaryFile) o;
-        return lastModified == that.lastModified &&
-                Objects.equals(path, that.path);
+        return lastModified == that.lastModified && Objects.equals(path, that.path);
     }
 
     @Override

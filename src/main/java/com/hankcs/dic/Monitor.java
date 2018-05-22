@@ -59,12 +59,14 @@ public class Monitor implements Runnable {
         Properties p = new Properties();
         try {
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
-            if (loader == null) {  // IKVM (v.0.44.0.5) doesn't set context classloader
+            if (loader == null) {
                 loader = HanLP.Config.class.getClassLoader();
             }
             p.load(new InputStreamReader(Predefine.HANLP_PROPERTIES_PATH == null ? loader.getResourceAsStream("hanlp.properties") : new FileInputStream(Predefine.HANLP_PROPERTIES_PATH), "UTF-8"));
             String root = p.getProperty("root", "").replaceAll("\\\\", "/");
-            if (root.length() > 0 && !root.endsWith("/")) root += "/";
+            if (root.length() > 0 && !root.endsWith("/")) {
+                root += "/";
+            }
             String[] pathArray = p.getProperty("CustomDictionaryPath", "data/dictionary/custom/CustomDictionary.txt").split(";");
             String prePath = root;
             for (int i = 0; i < pathArray.length; ++i) {

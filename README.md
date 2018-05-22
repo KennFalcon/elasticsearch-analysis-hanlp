@@ -11,6 +11,8 @@ HanLP Analyzer for ElasticSearch
 | Plugin version | Elastic version |
 | --- | --- |
 | master | 6.x |
+| 6.2.4 | 6.2.4 |
+| 6.2.2 | 6.2.2 |
 | 5.2.2 | 5.2.2 |
 
 安装方式：
@@ -29,7 +31,7 @@ HanLP Analyzer for ElasticSearch
 
    a. 使用elasticsearch插件脚本安装command如下：
    
-   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.2.2/elasticsearch-analysis-hanlp-6.2.2.zip`
+   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.2.4/elasticsearch-analysis-hanlp-6.2.4.zip`
 
 2. 安装数据包
 
@@ -56,7 +58,7 @@ hanlp_standard: 标准分词
 
 hanlp_index: 索引分词
 
-hanlp_index: NLP分词
+hanlp_nlp: NLP分词
 
 hanlp_n_short: N-最短路分词
 

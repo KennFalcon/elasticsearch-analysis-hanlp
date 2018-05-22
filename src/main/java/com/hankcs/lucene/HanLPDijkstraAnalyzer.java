@@ -25,6 +25,7 @@ public class HanLPDijkstraAnalyzer extends Analyzer {
         super();
     }
 
+    @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
         Tokenizer tokenizer = new HanLPTokenizer(new DijkstraSegment(), configuration);
         return new Analyzer.TokenStreamComponents(tokenizer);

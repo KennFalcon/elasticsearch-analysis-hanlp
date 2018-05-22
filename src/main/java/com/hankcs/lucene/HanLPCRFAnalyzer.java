@@ -22,6 +22,7 @@ public class HanLPCRFAnalyzer extends Analyzer {
         super();
     }
 
+    @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
         Tokenizer tokenizer = new HanLPTokenizer(new CRFSegment(), configuration);
         return new Analyzer.TokenStreamComponents(tokenizer);

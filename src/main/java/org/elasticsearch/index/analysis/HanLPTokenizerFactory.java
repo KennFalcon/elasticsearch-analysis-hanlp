@@ -63,6 +63,7 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.SPEED);
     }
 
+    @Override
     public Tokenizer create() {
         switch (this.hanLPType) {
             case HANLP:
@@ -87,7 +88,8 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
             case SPEED:
                 configuration.enableCustomDictionary(false);
                 return new HanLPTokenizer(new DoubleArrayTrieSegment(), configuration);
+            default:
+                return new HanLPTokenizer(HanLP.newSegment(), configuration);
         }
-        return null;
     }
 }

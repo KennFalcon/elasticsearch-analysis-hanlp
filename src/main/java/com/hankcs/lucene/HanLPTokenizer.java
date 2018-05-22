@@ -75,6 +75,7 @@ public class HanLPTokenizer extends Tokenizer {
             Segment inner = segment;
             TraditionalChineseTokenizer.SEGMENT = inner;
             segment = new Segment() {
+                @Override
                 protected List<Term> segSentence(char[] sentence) {
                     List<Term> termList = TraditionalChineseTokenizer.segment(new String(sentence));
                     return termList;
@@ -89,7 +90,7 @@ public class HanLPTokenizer extends Tokenizer {
         clearAttributes();
         int position = 0;
         Term term;
-        boolean un_increased = true;
+        boolean unIncreased = true;
         do {
             term = segment.next();
             if (term == null) {
@@ -101,10 +102,10 @@ public class HanLPTokenizer extends Tokenizer {
 
             if ((!this.configuration.isEnableStopDictionary()) || (!CoreStopWordDictionary.shouldRemove(term))) {
                 position++;
-                un_increased = false;
+                unIncreased = false;
             }
         }
-        while (un_increased);
+        while (unIncreased);
 
         if (term != null) {
             positionAttr.setPositionIncrement(position);

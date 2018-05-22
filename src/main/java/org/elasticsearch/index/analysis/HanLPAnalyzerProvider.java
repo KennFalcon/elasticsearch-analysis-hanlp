@@ -79,6 +79,7 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
         return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.SPEED);
     }
 
+    @Override
     public Analyzer get() {
         return this.analyzer;
     }

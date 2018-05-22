@@ -25,6 +25,7 @@ public class HanLPSpeedAnalyzer extends Analyzer {
         super();
     }
 
+    @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
         Tokenizer tokenizer = new HanLPTokenizer(new DoubleArrayTrieSegment(), this.configuration);
         return new Analyzer.TokenStreamComponents(tokenizer);

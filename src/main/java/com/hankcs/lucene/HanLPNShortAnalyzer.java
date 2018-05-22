@@ -25,6 +25,7 @@ public class HanLPNShortAnalyzer extends Analyzer {
         super();
     }
 
+    @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
         Tokenizer tokenizer = new HanLPTokenizer(new NShortSegment(), configuration);
         return new Analyzer.TokenStreamComponents(tokenizer);
