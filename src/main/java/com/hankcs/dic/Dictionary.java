@@ -1,13 +1,12 @@
 package com.hankcs.dic;
 
 import com.hankcs.cfg.Configuration;
+import com.hankcs.dic.cache.DictionaryFileCache;
 import com.hankcs.hanlp.utility.Predefine;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.common.io.PathUtils;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,6 +40,8 @@ public class Dictionary {
         configDir = configuration.getEnvironment().configFile().resolve(AnalysisHanLPPlugin.PLUGIN_NAME);
         Predefine.HANLP_PROPERTIES_PATH = configDir.resolve(CONFIG_FILE_NAME).toString();
         logger.debug("hanlp properties path: {}", Predefine.HANLP_PROPERTIES_PATH);
+        DictionaryFileCache.configCachePath(configuration);
+        DictionaryFileCache.loadCache();
     }
 
     public static synchronized Dictionary initial(Configuration configuration) {

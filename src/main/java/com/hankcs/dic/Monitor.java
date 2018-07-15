@@ -2,14 +2,17 @@ package com.hankcs.dic;
 
 import com.hankcs.dic.cache.DictionaryFileCache;
 import com.hankcs.hanlp.HanLP;
-import com.hankcs.hanlp.dictionary.CustomDictionary;
 import com.hankcs.hanlp.utility.Predefine;
+import com.hankcs.utility.CustomDictionaryUtility;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.SpecialPermission;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +29,13 @@ import java.util.Properties;
 public class Monitor implements Runnable {
 
     private static final Logger logger = ESLoggerFactory.getLogger(Monitor.class);
+
+    public Monitor() {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(new SpecialPermission());
+        }
+    }
 
     @Override
     public void run() {
@@ -44,11 +54,12 @@ public class Monitor implements Runnable {
         if (isModified) {
             logger.info("reloading hanlp custom dictionary");
             try {
-                CustomDictionary.reload();
+                AccessController.doPrivileged((PrivilegedAction) CustomDictionaryUtility::reload);
             } catch (Exception e) {
                 logger.error("can not reload hanlp custom dictionary", e);
             }
             DictionaryFileCache.setCustomDictionaryFileList(currentDictironaryFileList);
+            DictionaryFileCache.writeCache();
             logger.info("finish reload hanlp custom dictionary");
         } else {
             logger.debug("hanlp custom dictionary isn't modified, so no need reload");
@@ -58,7 +69,7 @@ public class Monitor implements Runnable {
     private void reloadProperty() {
         Properties p = new Properties();
         try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            ClassLoader loader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
             if (loader == null) {
                 loader = HanLP.Config.class.getClassLoader();
             }
@@ -80,7 +91,7 @@ public class Monitor implements Runnable {
                     }
                 }
             }
-            HanLP.Config.CustomDictionaryPath = pathArray;
+            AccessController.doPrivileged((PrivilegedAction) () -> HanLP.Config.CustomDictionaryPath = pathArray);
         } catch (Exception e) {
             logger.error("can not find hanlp.properties", e);
         }
@@ -89,10 +100,24 @@ public class Monitor implements Runnable {
     private List<DictionaryFile> getCurrentDictionaryFileList(String[] customDictionaryPaths) {
         List<DictionaryFile> dictionaryFileList = new ArrayList<>();
         for (String customDictionaryPath : customDictionaryPaths) {
-            File file = new File(customDictionaryPath);
-            if (file.exists()) {
-                dictionaryFileList.add(new DictionaryFile(customDictionaryPath, file.lastModified()));
-            }
+            String[] customDictionaryPathTuple = customDictionaryPath.split(" ");
+            String path = customDictionaryPathTuple[0].trim();
+            logger.debug("hanlp custom path: {}", path);
+            File file = new File(path);
+            AccessController.doPrivileged((PrivilegedAction) () -> {
+                if (file.exists()) {
+                    if (customDictionaryPathTuple.length > 1) {
+                        if (customDictionaryPathTuple[1] == null || customDictionaryPathTuple[1].length() == 0) {
+                            dictionaryFileList.add(new DictionaryFile(path, file.lastModified()));
+                        } else {
+                            dictionaryFileList.add(new DictionaryFile(path, customDictionaryPathTuple[1].trim(), file.lastModified()));
+                        }
+                    } else {
+                        dictionaryFileList.add(new DictionaryFile(path, file.lastModified()));
+                    }
+                }
+                return null;
+            });
         }
         return dictionaryFileList;
     }

@@ -14,11 +14,21 @@ public class DictionaryFile {
 
     private String path;
 
+    private String type;
+
     private long lastModified;
+
+    public DictionaryFile() {
+    }
 
     public DictionaryFile(String path, long lastModified) {
         this.path = path;
         this.lastModified = lastModified;
+    }
+
+    public DictionaryFile(String path, String type, long lastModified) {
+        this(path, lastModified);
+        this.type = type;
     }
 
     public String getPath() {
@@ -27,6 +37,14 @@ public class DictionaryFile {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public long getLastModified() {
@@ -46,12 +64,14 @@ public class DictionaryFile {
             return false;
         }
         DictionaryFile that = (DictionaryFile) o;
-        return lastModified == that.lastModified && Objects.equals(path, that.path);
+        return lastModified == that.lastModified &&
+                Objects.equals(path, that.path) &&
+                Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(path, lastModified);
+        return Objects.hash(path, type, lastModified);
     }
 
     @Override
