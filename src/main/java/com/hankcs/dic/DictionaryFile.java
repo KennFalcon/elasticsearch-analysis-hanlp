@@ -1,5 +1,8 @@
 package com.hankcs.dic;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -53,6 +56,41 @@ public class DictionaryFile {
 
     public void setLastModified(long lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public void write(DataOutputStream out) throws IOException {
+        if (path != null && path.length() != 0) {
+            byte[] bytes = path.getBytes("utf-8");
+            out.writeInt(bytes.length);
+            out.write(bytes);
+        } else {
+            out.writeInt(0);
+        }
+        if (type != null && type.length() != 0) {
+            byte[] bytes = type.getBytes("utf-8");
+            out.writeInt(bytes.length);
+            out.write(bytes);
+        } else {
+            out.writeInt(0);
+        }
+        out.writeLong(lastModified);
+    }
+
+    public void read(DataInputStream in) throws IOException {
+        int pathLength = in.readInt();
+        if (pathLength != 0) {
+            byte[] bytes = new byte[pathLength];
+            in.read(bytes);
+            path = new String(bytes, "utf-8");
+        }
+
+        int typeLength = in.readInt();
+        if (typeLength != 0) {
+            byte[] bytes = new byte[typeLength];
+            in.read(bytes);
+            type = new String(bytes, "utf-8");
+        }
+        lastModified = in.readLong();
     }
 
     @Override

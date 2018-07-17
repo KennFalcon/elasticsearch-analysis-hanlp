@@ -4,6 +4,7 @@ import com.hankcs.cfg.Configuration;
 import com.hankcs.dic.cache.DictionaryFileCache;
 import com.hankcs.hanlp.utility.Predefine;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.cluster.LocalNodeMasterListener;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 

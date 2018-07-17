@@ -30,14 +30,14 @@ public class CustomDictionaryUtility {
 
     public static boolean reload() {
         CustomDictionary.dat.getSize();
-        String path[] = HanLP.Config.CustomDictionaryPath;
-        if (path == null || path.length == 0) {
+        String[] paths = HanLP.Config.CustomDictionaryPath;
+        if (paths == null || paths.length == 0) {
             return false;
         }
-        logger.info("begin delete hanlp custom dictionary cache");
-        IOUtil.deleteFile(path[0] + Predefine.BIN_EXT);
-        logger.info("delete hanlp custom dictionary cache successfully");
-        return loadMainDictionary(path[0]);
+        logger.debug("begin delete hanlp custom dictionary cache");
+        IOUtil.deleteFile(paths[0] + Predefine.BIN_EXT);
+        logger.debug("delete hanlp custom dictionary cache successfully");
+        return loadMainDictionary(paths[0]);
     }
 
     private static boolean loadMainDictionary(String mainPath) {
@@ -60,7 +60,7 @@ public class CustomDictionaryUtility {
                         continue;
                     }
                 }
-                logger.info("hanlp begin reload custom dictionary: {}, default nature: {}", path, defaultNature);
+                logger.debug("hanlp begin reload custom dictionary: {}, default nature: {}", path, defaultNature);
                 if (!load(path, defaultNature, map, customNatureCollector)) {
                     logger.warn("hanlp reload error, custom dictionary: {}", path);
                 }
@@ -70,16 +70,14 @@ public class CustomDictionaryUtility {
                 // 当作空白占位符
                 map.put(Predefine.TAG_OTHER, null);
             }
-            logger.info("hanlp begin build double array trie");
+            logger.debug("hanlp begin build double array trie");
             CustomDictionary.dat.build(map);
             // 缓存成dat文件，下次加载会快很多
-            logger.info("hanlp converting custom dictionary cache to dat file");
+            logger.debug("hanlp converting custom dictionary cache to dat file");
             // 缓存值文件
             logger.debug("hanlp traversing custom dictionary words");
             List<CoreDictionary.Attribute> attributeList = new LinkedList<>();
-            for (CoreDictionary.Attribute attribute : map.values()) {
-                attributeList.add(attribute);
-            }
+            attributeList.addAll(map.values());
             logger.debug("hanlp traverse custom dictionary successfully");
             DataOutputStream out = new DataOutputStream(IOUtil.newOutputStream(mainPath + Predefine.BIN_EXT));
             // 缓存用户词性
