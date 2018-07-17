@@ -7,10 +7,11 @@ HanLP Analyzer for ElasticSearch
 
 1. 下载安装ES对应Plugin Release版本
 
-
 | Plugin version | Elastic version |
 | --- | --- |
 | master | 6.x |
+| 6.3.1 | 6.3.1 |
+| 6.3.0 | 6.3.0 |
 | 6.2.4 | 6.2.4 |
 | 6.2.2 | 6.2.2 |
 | 5.2.2 | 5.2.2 |
@@ -37,18 +38,25 @@ HanLP Analyzer for ElasticSearch
 
 release包中存放的为HanLP源码中默认的分词数据，若要下载完整版数据包，请查看https://github.com/hankcs/HanLP/releases
 
-数据包目录：*ES_HOME*/plugins/elasticsearch-analysis-hanlp/config
+数据包目录：*ES_HOME*/analysis-hanlp
 
-3. 增加文件读取权限
+**注：因原版数据包自定义词典部分文件为中文，这里的hanlp.properties中已修改为英文，请对应修改文件名**
 
-修改 *ES_HOME*/config 目录下的 jvm.options 文件添加一行（读取hanlp.properties配置文件需要）
-
--Djava.security.policy=file:///*ES_HOME*/plugins/analysis-hanlp/plugin-security.policy
-
-
-4. 重启Elasticsearch
+3. 重启Elasticsearch
 
 **注：上述说明中的ES_HOME为自己的ES安装路径，需要绝对路径**
+
+4. 热更新
+
+在本版本中，增加了词典热更新，修改步骤如下：
+
+a. 在*ES_HOME*/analysis-hanlp/data/dictionary/custom目录中新增自定义词典
+
+b. 修改hanlp.properties，修改CustomDictionaryPath，增加自定义词典配置
+
+c. 等待1分钟后，词典自动加载
+
+**注：每个节点都需要做上述更改**
 
 ## 提供的分词器说明
 
@@ -64,7 +72,7 @@ hanlp_n_short: N-最短路分词
 
 hanlp_dijkstra: 最短路分词
 
-hanlp_crf: CRF分词
+hanlp_crf: CRF分词（在hanlp 1.6.6已开始废弃）
 
 hanlp_speed: 极速词典分词
 
