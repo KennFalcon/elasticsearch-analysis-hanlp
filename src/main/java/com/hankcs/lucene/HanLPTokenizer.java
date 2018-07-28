@@ -15,6 +15,8 @@ import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 /**
@@ -99,8 +101,8 @@ public class HanLPTokenizer extends Tokenizer {
             if (configuration.isEnablePorterStemming() && term.nature == Nature.nx) {
                 term.word = stemmer.stem(term.word);
             }
-
-            if ((!this.configuration.isEnableStopDictionary()) || (!CoreStopWordDictionary.shouldRemove(term))) {
+            final Term copyTerm = term;
+            if ((!this.configuration.isEnableStopDictionary()) || (!AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> CoreStopWordDictionary.shouldRemove(copyTerm)))) {
                 position++;
                 unIncreased = false;
             }
