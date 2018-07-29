@@ -1,10 +1,9 @@
 package com.hankcs.lucene;
 
+import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.seg.CRF.CRFSegment;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Tokenizer;
-
-import java.util.Set;
 
 /**
  * CRF分析器
@@ -13,36 +12,19 @@ import java.util.Set;
  */
 public class HanLPCRFAnalyzer extends Analyzer {
 
-    private boolean enablePorterStemming;
-    private Set<String> filter;
+    private Configuration configuration;
 
-    /**
-     * @param filter               停用词
-     * @param enablePorterStemming 是否分析词干（仅限英文）
-     */
-    public HanLPCRFAnalyzer(Set<String> filter, boolean enablePorterStemming) {
-        this.filter = filter;
-        this.enablePorterStemming = enablePorterStemming;
-    }
-
-    /**
-     * @param enablePorterStemming 是否分析词干.进行单复数,时态的转换
-     */
-    public HanLPCRFAnalyzer(boolean enablePorterStemming) {
-        this.enablePorterStemming = enablePorterStemming;
+    public HanLPCRFAnalyzer(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     public HanLPCRFAnalyzer() {
         super();
     }
 
-    /**
-     * 重载Analyzer接口，构造分词组件
-     */
     @Override
-    protected TokenStreamComponents createComponents(String fieldName) {
-        Tokenizer tokenizer = new HanLPTokenizer(new CRFSegment(), filter, enablePorterStemming);
-        return new TokenStreamComponents(tokenizer);
+    protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
+        Tokenizer tokenizer = new HanLPTokenizer(new CRFSegment(), configuration);
+        return new Analyzer.TokenStreamComponents(tokenizer);
     }
-
 }

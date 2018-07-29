@@ -1,5 +1,6 @@
 package org.elasticsearch.index.analysis;
 
+import com.hankcs.cfg.Configuration;
 import com.hankcs.lucene.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.elasticsearch.common.settings.Settings;
@@ -7,7 +8,7 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 
 /**
- * Created by Kenn on 2017/3/15.
+ * @author Kenn
  */
 public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyzer> {
 
@@ -15,30 +16,31 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
 
     public HanLPAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings, HanLPType hanLPType) {
         super(indexSettings, name, settings);
+        Configuration configuration = new Configuration(env, settings);
         switch (hanLPType) {
             case HANLP:
-                analyzer = new HanLPAnalyzer();
+                analyzer = new HanLPAnalyzer(configuration);
                 break;
             case STANDARD:
-                analyzer = new HanLPStandardAnalyzer();
+                analyzer = new HanLPStandardAnalyzer(configuration);
                 break;
             case INDEX:
-                analyzer = new HanLPIndexAnalyzer();
+                analyzer = new HanLPIndexAnalyzer(configuration);
                 break;
             case NLP:
-                analyzer = new HanLPNLPAnalyzer();
+                analyzer = new HanLPNLPAnalyzer(configuration);
                 break;
             case N_SHORT:
-                analyzer = new HanLPNShortAnalyzer();
+                analyzer = new HanLPNShortAnalyzer(configuration);
                 break;
             case DIJKSTRA:
-                analyzer = new HanLPDijkstraAnalyzer();
+                analyzer = new HanLPDijkstraAnalyzer(configuration);
                 break;
             case CRF:
-                analyzer = new HanLPCRFAnalyzer();
+                analyzer = new HanLPCRFAnalyzer(configuration);
                 break;
             case SPEED:
-                analyzer = new HanLPSpeedAnalyzer();
+                analyzer = new HanLPSpeedAnalyzer(configuration);
                 break;
             default:
                 analyzer = null;
@@ -79,7 +81,6 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
 
     @Override
     public Analyzer get() {
-        return analyzer;
+        return this.analyzer;
     }
-
 }

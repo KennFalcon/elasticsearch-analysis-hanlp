@@ -1,9 +1,26 @@
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
+# Common
+.DS_Store
+classes/
+*/bin
+*/build
+*/target
+*buildSrc/build
+
+# Spring
+/spring-*/build
+spring-test/test-output/
+
+# Eclipse artifacts, including WTP generated manifests
+.classpath
+.project
+spring-*/src/main/java/META-INF/MANIFEST.MF
+
+# IDEA artifacts and output dirs
+*.iml
+*.ipr
+*.iws
+.idea
+out
+test-output
+atlassian-ide-plugin.xml
+.gradletasknamecache

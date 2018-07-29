@@ -1,15 +1,29 @@
 <?xml version="1.0"?>
 <assembly>
-     <id>analysis-hanlp-release</id>
+    <id>analysis-hanlp-release</id>
     <formats>
         <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
-
+    <fileSets>
+        <fileSet>
+            <directory>${project.basedir}/config</directory>
+            <outputDirectory>/config</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/data</directory>
+            <outputDirectory>/data</outputDirectory>
+        </fileSet>
+    </fileSets>
     <files>
         <file>
             <source>${project.basedir}/src/main/resources/plugin-descriptor.properties</source>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>/</outputDirectory>
+            <filtered>true</filtered>
+        </file>
+        <file>
+            <source>${project.basedir}/src/main/resources/plugin-security.policy</source>
+            <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
         </file>
     </files>
@@ -28,13 +42,24 @@
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
                 <include>com.hankcs:hanlp</include>
-                <include>com.hankcs.nlp:hanlp-lucene-plugin</include>
             </includes>
             <excludes>
                 <exclude>org.apache.lucene:lucene-core</exclude>
                 <exclude>org.apache.lucene:lucene-analyzers-common</exclude>
                 <exclude>org.apache.lucene:lucene-queryparser</exclude>
                 <exclude>org.apache.lucene:lucene-sandbox</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <includes>
+                <include>com.fasterxml.jackson.core:jackson-databind</include>
+                <include>com.fasterxml.jackson.core:jackson-annotations</include>
+            </includes>
+            <excludes>
+                <exclude>com.fasterxml.jackson.core:jackson-core</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>

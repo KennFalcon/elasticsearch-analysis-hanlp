@@ -1,5 +1,6 @@
 package org.elasticsearch.index.analysis;
 
+import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.CRF.CRFSegment;
 import com.hankcs.hanlp.seg.Dijkstra.DijkstraSegment;
@@ -15,81 +16,80 @@ import org.elasticsearch.index.IndexSettings;
  * Created by Kenn on 2017/3/15.
  */
 public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
-
+    /**
+     * 分词类型
+     */
     private HanLPType hanLPType;
+    /**
+     * 分词配置
+     */
+    private Configuration configuration;
 
-    private boolean enablePorterStemming;
-
-    public HanLPTokenizerFactory(IndexSettings indexSettings, String name, Settings settings, HanLPType hanLPType) {
+    public HanLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings, HanLPType hanLPType) {
         super(indexSettings, name, settings);
         this.hanLPType = hanLPType;
-        this.enablePorterStemming = settings.getAsBoolean("enablePorterStemming", false);
+        this.configuration = new Configuration(env, settings);
     }
 
     public static HanLPTokenizerFactory getHanLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPTokenizerFactory(indexSettings, name, settings, HanLPType.HANLP);
+        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.HANLP);
     }
 
     public static HanLPTokenizerFactory getHanLPStandardTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPTokenizerFactory(indexSettings, name, settings, HanLPType.STANDARD);
+        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.STANDARD);
     }
 
     public static HanLPTokenizerFactory getHanLPIndexTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPTokenizerFactory(indexSettings, name, settings, HanLPType.INDEX);
+        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.INDEX);
     }
 
     public static HanLPTokenizerFactory getHanLPNLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPTokenizerFactory(indexSettings, name, settings, HanLPType.NLP);
+        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.NLP);
     }
 
     public static HanLPTokenizerFactory getHanLPNShortTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPTokenizerFactory(indexSettings, name, settings, HanLPType.N_SHORT);
+        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.N_SHORT);
     }
 
     public static HanLPTokenizerFactory getHanLPDijkstraTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPTokenizerFactory(indexSettings, name, settings, HanLPType.DIJKSTRA);
+        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.DIJKSTRA);
     }
 
     public static HanLPTokenizerFactory getHanLPCRFTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPTokenizerFactory(indexSettings, name, settings, HanLPType.CRF);
+        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.CRF);
     }
 
     public static HanLPTokenizerFactory getHanLPSpeedTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPTokenizerFactory(indexSettings, name, settings, HanLPType.SPEED);
+        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.SPEED);
     }
 
     @Override
     public Tokenizer create() {
-        switch (hanLPType) {
+        switch (this.hanLPType) {
             case HANLP:
-                return new HanLPTokenizer(HanLP.newSegment(), null, enablePorterStemming);
+                return new HanLPTokenizer(HanLP.newSegment(), configuration);
             case STANDARD:
-                return new HanLPTokenizer(HanLP.newSegment(), null, enablePorterStemming);
+                return new HanLPTokenizer(HanLP.newSegment(), configuration);
             case INDEX:
-                return new HanLPTokenizer(HanLP.newSegment().enableIndexMode(true), null, enablePorterStemming);
+                configuration.enableIndexMode(true);
+                return new HanLPTokenizer(HanLP.newSegment(), configuration);
             case NLP:
-                return new HanLPTokenizer(
-                        HanLP.newSegment().enableNameRecognize(true).enableTranslatedNameRecognize(true)
-                                .enableJapaneseNameRecognize(true).enablePlaceRecognize(true)
-                                .enableOrganizationRecognize(true).enablePartOfSpeechTagging(true),
-                        null, enablePorterStemming);
+                configuration.enableNameRecognize(true).enableTranslatedNameRecognize(true).enableJapaneseNameRecognize(true).enablePlaceRecognize(true).enableOrganizationRecognize(true).enablePartOfSpeechTagging(true);
+                return new HanLPTokenizer(HanLP.newSegment(), configuration);
             case N_SHORT:
-                return new HanLPTokenizer(new NShortSegment().enableCustomDictionary(false)
-                        .enablePlaceRecognize(true).enableOrganizationRecognize(true), null,
-                        enablePorterStemming);
+                configuration.enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true);
+                return new HanLPTokenizer(new NShortSegment(), configuration);
             case DIJKSTRA:
-                return new HanLPTokenizer(new DijkstraSegment().enableCustomDictionary(false)
-                        .enablePlaceRecognize(true).enableOrganizationRecognize(true), null,
-                        enablePorterStemming);
+                configuration.enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true);
+                return new HanLPTokenizer(new DijkstraSegment(), configuration);
             case CRF:
-                return new HanLPTokenizer(new CRFSegment(), null, enablePorterStemming);
-
+                configuration.enablePartOfSpeechTagging(true);
+                return new HanLPTokenizer(new CRFSegment(), configuration);
             case SPEED:
-                return new HanLPTokenizer(new DoubleArrayTrieSegment().enableCustomDictionary(true).enablePartOfSpeechTagging(true), null,
-                        enablePorterStemming);
+                configuration.enableCustomDictionary(false);
+                return new HanLPTokenizer(new DoubleArrayTrieSegment(), configuration);
             default:
-                return null;
+                return new HanLPTokenizer(HanLP.newSegment(), configuration);
         }
     }
-
 }
