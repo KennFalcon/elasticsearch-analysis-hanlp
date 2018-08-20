@@ -1,7 +1,7 @@
 # elasticsearch-analysis-hanlp
 HanLP Analyzer for ElasticSearch
 
-此分词器基于HanLP，提供了HanLP中大部分的分词方式。(http://www.hankcs.com/nlp）
+此分词器基于HanLP，提供了HanLP中大部分的分词方式。( http://www.hankcs.com/nlp ）
 
 ## 版本对应
 
