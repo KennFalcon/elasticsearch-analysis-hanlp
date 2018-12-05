@@ -6,7 +6,7 @@ import com.hankcs.hanlp.utility.Predefine;
 import com.hankcs.utility.CustomDictionaryUtility;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.SpecialPermission;
-import org.elasticsearch.common.logging.ESLoggerFactory;
+import org.elasticsearch.common.logging.Loggers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,7 +28,7 @@ import java.util.Properties;
  */
 public class Monitor implements Runnable {
 
-    private static final Logger logger = ESLoggerFactory.getLogger(Monitor.class);
+    private static final Logger logger = Loggers.getLogger(Monitor.class);
 
     public Monitor() {
         SecurityManager sm = System.getSecurityManager();

@@ -11,10 +11,13 @@ import com.hankcs.hanlp.utility.LexiconUtility;
 import com.hankcs.hanlp.utility.Predefine;
 import com.hankcs.hanlp.utility.TextUtility;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.common.logging.ESLoggerFactory;
+import org.elasticsearch.common.logging.Loggers;
 
 import java.io.*;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,7 +29,7 @@ import java.util.*;
  */
 public class CustomDictionaryUtility {
 
-    private static final Logger logger = ESLoggerFactory.getLogger(CustomDictionaryUtility.class);
+    private static final Logger logger = Loggers.getLogger(CustomDictionaryUtility.class);
 
     public static boolean reload() {
         CustomDictionary.dat.getSize();

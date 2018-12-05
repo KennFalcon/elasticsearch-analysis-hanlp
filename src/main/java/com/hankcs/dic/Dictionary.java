@@ -4,8 +4,7 @@ import com.hankcs.cfg.Configuration;
 import com.hankcs.dic.cache.DictionaryFileCache;
 import com.hankcs.hanlp.utility.Predefine;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.cluster.LocalNodeMasterListener;
-import org.elasticsearch.common.logging.ESLoggerFactory;
+import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 
 import java.nio.file.Path;
@@ -33,7 +32,7 @@ public class Dictionary {
 
     private final String CONFIG_FILE_NAME = "hanlp.properties";
 
-    private static final Logger logger = ESLoggerFactory.getLogger(Dictionary.class);
+    private static final Logger logger = Loggers.getLogger(Dictionary.class);
 
     private static ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
 

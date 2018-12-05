@@ -3,7 +3,7 @@ package com.hankcs.dic.cache;
 import com.hankcs.cfg.Configuration;
 import com.hankcs.dic.DictionaryFile;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.common.logging.ESLoggerFactory;
+import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.core.internal.io.IOUtils;
 import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class DictionaryFileCache {
 
-    private static final Logger logger = ESLoggerFactory.getLogger(DictionaryFileCache.class);
+    private static final Logger logger = Loggers.getLogger(DictionaryFileCache.class);
 
     private static Path cachePath = null;
 
