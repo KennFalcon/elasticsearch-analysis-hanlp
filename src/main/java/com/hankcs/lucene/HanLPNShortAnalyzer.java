@@ -5,6 +5,9 @@ import com.hankcs.hanlp.seg.NShort.NShortSegment;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Tokenizer;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 /**
  * N-最短路径分析器
  *
@@ -27,7 +30,7 @@ public class HanLPNShortAnalyzer extends Analyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Tokenizer tokenizer = new HanLPTokenizer(new NShortSegment(), configuration);
+        Tokenizer tokenizer = AccessController.doPrivileged((PrivilegedAction<HanLPTokenizer>) () -> new HanLPTokenizer(new NShortSegment(), configuration));
         return new Analyzer.TokenStreamComponents(tokenizer);
     }
 }

@@ -5,6 +5,9 @@ import com.hankcs.hanlp.seg.Other.DoubleArrayTrieSegment;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Tokenizer;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 /**
  * 极速词典分析器
  *
@@ -27,7 +30,7 @@ public class HanLPSpeedAnalyzer extends Analyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Tokenizer tokenizer = new HanLPTokenizer(new DoubleArrayTrieSegment(), this.configuration);
+        Tokenizer tokenizer = AccessController.doPrivileged((PrivilegedAction<HanLPTokenizer>) () -> new HanLPTokenizer(new DoubleArrayTrieSegment(), configuration));
         return new Analyzer.TokenStreamComponents(tokenizer);
     }
 }

@@ -71,6 +71,7 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
         return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.DIJKSTRA);
     }
 
+    @Deprecated
     public static HanLPAnalyzerProvider getHanLPCRFAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.CRF);
     }
