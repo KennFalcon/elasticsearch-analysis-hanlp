@@ -3,6 +3,8 @@ HanLP Analyzer for ElasticSearch
 
 此分词器基于HanLP，提供了HanLP中大部分的分词方式。( http://www.hankcs.com/nlp ）
 
+🚩推迟好久对接Elasticsearch新版本了，2018年12月5日一次性发布对接了从Elasticsearch 6.4.0到Elasticsearch 6.5.1，主要推迟原因是公司忙以及想做实时自定义词典的功能，所以推迟了这么久。新功能还在摸索中，还在不断的膜拜ES代码，所以决定先给大家适配一下近几个月的ES版本。每个版本自己做了一下单点测试，都没有太多问题，如果有问题大家就提issue吧，如果我能看到会及时回复的，当然也可以发我邮箱kennfalcon@163.com联系我。
+
 ## 版本对应
 
 1. 下载安装ES对应Plugin Release版本
@@ -10,6 +12,7 @@ HanLP Analyzer for ElasticSearch
 | Plugin version | Elastic version |
 | --- | --- |
 | master | 6.x |
+| 6.5.1 | 6.5.1 |
 | 6.5.0 | 6.5.0 |
 | 6.4.3 | 6.4.3 |
 | 6.4.2 | 6.4.2 |
