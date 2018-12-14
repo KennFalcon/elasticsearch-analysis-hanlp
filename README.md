@@ -2,6 +2,7 @@
 HanLP Analyzer for ElasticSearch
 
 [![Build Status](https://travis-ci.com/KennFalcon/elasticsearch-analysis-hanlp.svg?branch=master)](https://travis-ci.com/KennFalcon/elasticsearch-analysis-hanlp)
+[![GitHub release](https://img.shields.io/github/release/KennFalcon/elasticsearch-analysis-hanlp.svg)](https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases)
 
 此分词器基于HanLP，提供了HanLP中大部分的分词方式。( http://www.hankcs.com/nlp ）
 
