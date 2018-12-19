@@ -9,9 +9,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * Hanlp默认分析器
- *
- * @author Kenn
+ * @project: elasticsearch-analysis-hanlp
+ * @description: Hanlp默认分析器
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
 public class HanLPAnalyzer extends Analyzer {
     /**

@@ -9,9 +9,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * N-最短路径分析器
- *
- * @author Kenn
+ * @project: elasticsearch-analysis-hanlp
+ * @description: N-最短路径分析器
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
 public class HanLPNShortAnalyzer extends Analyzer {
     /**

@@ -3,15 +3,14 @@ package com.hankcs.dic;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kenn
- * Date: 2018/2/8
- * Time: 17:12
- * Project: elasticsearch-analysis-hanlp
- * Description:
+ * @project: elasticsearch-analysis-hanlp
+ * @description: 自定义词典文件信息
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
 public class DictionaryFile {
 
@@ -24,12 +23,12 @@ public class DictionaryFile {
     public DictionaryFile() {
     }
 
-    public DictionaryFile(String path, long lastModified) {
+    DictionaryFile(String path, long lastModified) {
         this.path = path;
         this.lastModified = lastModified;
     }
 
-    public DictionaryFile(String path, String type, long lastModified) {
+    DictionaryFile(String path, String type, long lastModified) {
         this(path, lastModified);
         this.type = type;
     }
@@ -60,14 +59,14 @@ public class DictionaryFile {
 
     public void write(DataOutputStream out) throws IOException {
         if (path != null && path.length() != 0) {
-            byte[] bytes = path.getBytes("utf-8");
+            byte[] bytes = path.getBytes(StandardCharsets.UTF_8);
             out.writeInt(bytes.length);
             out.write(bytes);
         } else {
             out.writeInt(0);
         }
         if (type != null && type.length() != 0) {
-            byte[] bytes = type.getBytes("utf-8");
+            byte[] bytes = type.getBytes(StandardCharsets.UTF_8);
             out.writeInt(bytes.length);
             out.write(bytes);
         } else {
@@ -81,14 +80,14 @@ public class DictionaryFile {
         if (pathLength != 0) {
             byte[] bytes = new byte[pathLength];
             in.read(bytes);
-            path = new String(bytes, "utf-8");
+            path = new String(bytes, StandardCharsets.UTF_8);
         }
 
         int typeLength = in.readInt();
         if (typeLength != 0) {
             byte[] bytes = new byte[typeLength];
             in.read(bytes);
-            type = new String(bytes, "utf-8");
+            type = new String(bytes, StandardCharsets.UTF_8);
         }
         lastModified = in.readLong();
     }

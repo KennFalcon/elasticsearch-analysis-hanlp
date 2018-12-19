@@ -12,6 +12,12 @@ import org.elasticsearch.plugins.Plugin;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @project: elasticsearch-analysis-hanlp
+ * @description: Hanlp分词插件
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
+ */
 public class AnalysisHanLPPlugin extends Plugin implements AnalysisPlugin {
 
     public static String PLUGIN_NAME = "analysis-hanlp";

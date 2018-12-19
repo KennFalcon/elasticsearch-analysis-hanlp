@@ -16,12 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kenn
- * Date: 2018/2/8
- * Time: 17:33
- * Project: elasticsearch-analysis-hanlp
- * Description:
+ * @project: elasticsearch-analysis-hanlp
+ * @description: 自定义词典文件信息缓存
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
 public class DictionaryFileCache {
 

@@ -5,6 +5,12 @@ import org.elasticsearch.common.inject.Inject;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 
+/**
+ * @project: elasticsearch-analysis-hanlp
+ * @description: 配置信息
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
+ */
 public class Configuration {
 
     private Environment environment;
@@ -35,6 +41,8 @@ public class Configuration {
 
     private boolean enablePartOfSpeechTagging;
 
+    private boolean enableRemoteDict;
+
     @Inject
     public Configuration(Environment env, Settings settings) {
         this.environment = env;
@@ -51,6 +59,7 @@ public class Configuration {
         this.enableTraditionalChineseMode = settings.get("enable_traditional_chinese_mode", "false").equals("true");
         this.enableStopDictionary = settings.get("enable_stop_dictionary", "false").equals("true");
         this.enablePartOfSpeechTagging = settings.get("enable_part_of_speech_tagging", "false").equals("true");
+        this.enableRemoteDict = settings.get("enable_remote_dict", "true").equals("true");
         Dictionary.initial(this);
     }
 
@@ -167,6 +176,15 @@ public class Configuration {
 
     public Configuration enablePartOfSpeechTagging(boolean enablePartOfSpeechTagging) {
         this.enablePartOfSpeechTagging = enablePartOfSpeechTagging;
+        return this;
+    }
+
+    public boolean isEnableRemoteDict() {
+        return enableRemoteDict;
+    }
+
+    public Configuration enableRemoteDict(boolean enableRemoteDict) {
+        this.enableRemoteDict = enableRemoteDict;
         return this;
     }
 }

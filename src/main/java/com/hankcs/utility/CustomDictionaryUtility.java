@@ -20,12 +20,10 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * Created with IntelliJ IDEA.
- * Author: Kenn
- * Date: 2018/7/15
- * Time: 19:22
- * Project: elasticsearch-analysis-hanlp
- * Description:
+ * @project: elasticsearch-analysis-hanlp
+ * @description: 自定义分词工具类
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
 public class CustomDictionaryUtility {
 

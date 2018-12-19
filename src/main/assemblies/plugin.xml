@@ -62,5 +62,13 @@
                 <exclude>com.fasterxml.jackson.core:jackson-core</exclude>
             </excludes>
         </dependencySet>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <includes>
+                <include>org.apache.httpcomponents:httpclient</include>
+            </includes>
+        </dependencySet>
     </dependencySets>
 </assembly>

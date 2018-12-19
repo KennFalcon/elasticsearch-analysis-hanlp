@@ -19,18 +19,16 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Kenn
- * Date: 2018/2/8
- * Time: 16:03
- * Project: elasticsearch-analysis-hanlp
- * Description:
+ * @project: elasticsearch-analysis-hanlp
+ * @description: 自定义词典监控线程
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
-public class Monitor implements Runnable {
+public class ExtMonitor implements Runnable {
 
-    private static final Logger logger = Loggers.getLogger(Monitor.class);
+    private static final Logger logger = Loggers.getLogger(ExtMonitor.class);
 
-    public Monitor() {
+    ExtMonitor() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             sm.checkPermission(new SpecialPermission());

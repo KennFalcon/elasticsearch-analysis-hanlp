@@ -13,7 +13,10 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 
 /**
- * Created by Kenn on 2017/3/15.
+ * @project: elasticsearch-analysis-hanlp
+ * @description: Hanlp tokenizer factory
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
 public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
     /**
