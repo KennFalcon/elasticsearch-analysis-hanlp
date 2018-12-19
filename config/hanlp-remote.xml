@@ -4,8 +4,8 @@
     <comment>HanLP Analyzer 扩展配置</comment>
 
     <!--用户可以在这里配置远程扩展字典 -->
-    <!--<entry key="remote_ext_dict">words_location</entry>-->
+    <entry key="remote_ext_dict">words_location</entry>
 
     <!--用户可以在这里配置远程扩展停止词字典-->
-    <!--<entry key="remote_ext_stopwords">words_location</entry>-->
+    <entry key="remote_ext_stopwords">stop_words_location</entry>
 </properties>
