@@ -5,11 +5,14 @@ HanLP Analyzer for ElasticSearch
 [![Build Status](https://travis-ci.com/KennFalcon/elasticsearch-analysis-hanlp.svg?branch=master)](https://travis-ci.com/KennFalcon/elasticsearch-analysis-hanlp)
 [![GitHub release](https://img.shields.io/github/release/KennFalcon/elasticsearch-analysis-hanlp.svg)](https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases)
 
-此分词器基于HanLP，提供了HanLP中大部分的分词方式。(http://www.hankcs.com/nlp）
+此分词器基于HanLP，提供了HanLP中大部分的分词方式。(<a target="_blank" href="http://www.hankcs.com/nlp">http://www.hankcs.com/nlp</a>)
 
 🚩推迟好久对接Elasticsearch新版本了，2018年12月5日一次性发布对接了从Elasticsearch 6.4.0到Elasticsearch 6.5.1，主要推迟原因是公司忙以及想做实时自定义词典的功能，所以推迟了这么久。新功能还在摸索中，还在不断的膜拜ES代码，所以决定先给大家适配一下近几个月的ES版本。每个版本自己做了一下单点测试，都没有太多问题，如果有问题大家就提issue吧，如果我能看到会及时回复的，当然也可以发我邮箱kennfalcon@163.com联系我。
 
-## 版本对应
+----------
+
+版本对应
+----------
 
 ### 1. 下载安装ES对应Plugin Release版本
 
@@ -47,7 +50,7 @@ HanLP Analyzer for ElasticSearch
 
 ### 2. 安装数据包
 
-release包中存放的为HanLP源码中默认的分词数据，若要下载完整版数据包，请查看https://github.com/hankcs/HanLP/releases
+release包中存放的为HanLP源码中默认的分词数据，若要下载完整版数据包，请查看<a target="_blank" href="https://github.com/hankcs/HanLP/releases">https://github.com/hankcs/HanLP/releases</a>
 
 数据包目录：*ES_HOME*/analysis-hanlp
 
@@ -69,7 +72,8 @@ c. 等待1分钟后，词典自动加载
 
 **注：每个节点都需要做上述更改**
 
-## 提供的分词器说明
+提供的分词方式说明
+----------
 
 hanlp: hanlp默认分词
 
@@ -87,7 +91,8 @@ hanlp_crf: CRF分词（在hanlp 1.6.6已开始废弃）
 
 hanlp_speed: 极速词典分词
 
-## 样例
+样例
+----------
 
 ```text
 POST http://localhost:9200/twitter2/_analyze
