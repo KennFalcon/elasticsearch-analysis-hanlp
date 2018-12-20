@@ -11,7 +11,7 @@ HanLP Analyzer for ElasticSearch
 
 ## 版本对应
 
-1. 下载安装ES对应Plugin Release版本
+### 1. 下载安装ES对应Plugin Release版本
 
 | Plugin version | Elastic version |
 | --- | --- |
@@ -45,7 +45,7 @@ HanLP Analyzer for ElasticSearch
    
    `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.5.1/elasticsearch-analysis-hanlp-6.5.1.zip`
 
-2. 安装数据包
+### 2. 安装数据包
 
 release包中存放的为HanLP源码中默认的分词数据，若要下载完整版数据包，请查看https://github.com/hankcs/HanLP/releases
 
@@ -53,11 +53,11 @@ release包中存放的为HanLP源码中默认的分词数据，若要下载完�
 
 **注：因原版数据包自定义词典部分文件为中文，这里的hanlp.properties中已修改为英文，请对应修改文件名**
 
-3. 重启Elasticsearch
+### 3. 重启Elasticsearch
 
 **注：上述说明中的ES_HOME为自己的ES安装路径，需要绝对路径**
 
-4. 热更新
+### 4. 热更新
 
 在本版本中，增加了词典热更新，修改步骤如下：
 
@@ -145,4 +145,3 @@ POST http://localhost:9200/twitter2/_analyze
   ]
 }
 ```
-
