@@ -1,6 +1,7 @@
 # elasticsearch-analysis-hanlp
 HanLP Analyzer for ElasticSearch
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/dbe4103dc2da4b6b89b5562aacaa3c3f)](https://app.codacy.com/app/kennfalcon/elasticsearch-analysis-hanlp?utm_source=github.com&utm_medium=referral&utm_content=KennFalcon/elasticsearch-analysis-hanlp&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://travis-ci.com/KennFalcon/elasticsearch-analysis-hanlp.svg?branch=master)](https://travis-ci.com/KennFalcon/elasticsearch-analysis-hanlp)
 [![GitHub release](https://img.shields.io/github/release/KennFalcon/elasticsearch-analysis-hanlp.svg)](https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases)
 
