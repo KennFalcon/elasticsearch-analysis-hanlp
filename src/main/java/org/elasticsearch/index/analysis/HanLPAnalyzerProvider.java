@@ -47,6 +47,7 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
                 break;
             default:
                 analyzer = null;
+                break;
         }
     }
 
