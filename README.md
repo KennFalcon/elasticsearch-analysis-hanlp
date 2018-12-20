@@ -89,7 +89,7 @@ hanlp_speed: 极速词典分词
 
 ## 样例
 
-```
+```text
 POST http://localhost:9200/twitter2/_analyze
 {
   "text": "美国阿拉斯加州发生8.0级地震",
@@ -97,7 +97,7 @@ POST http://localhost:9200/twitter2/_analyze
 }
 ```
 
-```
+```json
 {
   "tokens" : [
     {
