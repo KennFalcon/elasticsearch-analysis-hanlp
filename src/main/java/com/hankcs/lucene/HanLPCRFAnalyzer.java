@@ -2,11 +2,8 @@ package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.seg.CRF.CRFSegment;
+import com.hankcs.hanlp.seg.Segment;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Tokenizer;
-
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * @project: elasticsearch-analysis-hanlp
@@ -15,7 +12,7 @@ import java.security.PrivilegedAction;
  * @create: 2018-12-14 15:10
  */
 @Deprecated
-public class HanLPCRFAnalyzer extends Analyzer {
+public class HanLPCRFAnalyzer extends BaseHanLPAnalyzer {
 
     private Configuration configuration;
 
@@ -29,7 +26,7 @@ public class HanLPCRFAnalyzer extends Analyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Tokenizer tokenizer = AccessController.doPrivileged((PrivilegedAction<HanLPTokenizer>) () -> new HanLPTokenizer(new CRFSegment(), configuration));
-        return new Analyzer.TokenStreamComponents(tokenizer);
+        Segment segment = buildSegment(new CRFSegment(), configuration);
+        return new Analyzer.TokenStreamComponents(buildBaseTokenizer(segment, configuration));
     }
 }

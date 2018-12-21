@@ -6,7 +6,7 @@ import com.hankcs.hanlp.corpus.tag.Nature;
 import com.hankcs.hanlp.dictionary.stopword.CoreStopWordDictionary;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
-import com.hankcs.hanlp.tokenizer.TraditionalChineseTokenizer;
+import com.hankcs.hanlp.utility.TextUtility;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
@@ -17,7 +17,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.List;
 
 /**
  * Tokenizer，抄袭ansj的
@@ -63,27 +62,6 @@ public class HanLPTokenizer extends Tokenizer {
      */
     public HanLPTokenizer(Segment segment, Configuration configuration) {
         this.configuration = configuration;
-        segment.enableIndexMode(configuration.isEnableIndexMode())
-                .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
-                .enableCustomDictionary(configuration.isEnableCustomDictionary())
-                .enableTranslatedNameRecognize(configuration.isEnableTranslatedNameRecognize())
-                .enableJapaneseNameRecognize(configuration.isEnableJapaneseNameRecognize())
-                .enableOrganizationRecognize(configuration.isEnableOrganizationRecognize())
-                .enablePlaceRecognize(configuration.isEnablePlaceRecognize())
-                .enableNameRecognize(configuration.isEnableNameRecognize())
-                .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging());
-        if (configuration.isEnableTraditionalChineseMode()) {
-            segment.enableIndexMode(false);
-            Segment inner = segment;
-            TraditionalChineseTokenizer.SEGMENT = inner;
-            segment = new Segment() {
-                @Override
-                protected List<Term> segSentence(char[] sentence) {
-                    List<Term> termList = TraditionalChineseTokenizer.segment(new String(sentence));
-                    return termList;
-                }
-            };
-        }
         this.segment = new SegmentWrapper(this.input, segment);
     }
 
@@ -97,6 +75,9 @@ public class HanLPTokenizer extends Tokenizer {
             term = segment.next();
             if (term == null) {
                 break;
+            }
+            if (TextUtility.isBlank(term.word)) {
+                continue;
             }
             if (configuration.isEnablePorterStemming() && term.nature == Nature.nx) {
                 term.word = stemmer.stem(term.word);

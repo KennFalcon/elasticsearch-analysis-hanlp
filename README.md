@@ -7,7 +7,7 @@ HanLP Analyzer for ElasticSearch
 
 此分词器基于HanLP，提供了HanLP中大部分的分词方式。(<a target="_blank" href="http://www.hankcs.com/nlp">http://www.hankcs.com/nlp</a>)
 
-🚩推迟好久对接Elasticsearch新版本了，2018年12月5日一次性发布对接了从Elasticsearch 6.4.0到Elasticsearch 6.5.1，主要推迟原因是公司忙以及想做实时自定义词典的功能，所以推迟了这么久。新功能还在摸索中，还在不断的膜拜ES代码，所以决定先给大家适配一下近几个月的ES版本。每个版本自己做了一下单点测试，都没有太多问题，如果有问题大家就提issue吧，如果我能看到会及时回复的，当然也可以发我邮箱kennfalcon@163.com联系我。
+🚩适配Elasticsearch 6.5.2，增加了远程词典的功能，功能类似于medcl大神的ik分词器插件(<a target="_blank" href="https://github.com/medcl/elasticsearch-analysis-ik">https://github.com/medcl/elasticsearch-analysis-ik</a>）,因为hanlp有词性的配置，所以远程自定义词典配置稍有不同，需要配置词性和频次。
 
 ----------
 
@@ -17,18 +17,20 @@ HanLP Analyzer for ElasticSearch
 ### 1. 下载安装ES对应Plugin Release版本
 
 | Plugin version | Elastic version |
-| --- | --- |
-|master|6.x|
-|6.5.1|6.5.1|
-|6.5.0|6.5.0|
-|6.4.3|6.4.3|
-|6.4.2|6.4.2|
-|6.4.1|6.4.1|
-|6.4.0|6.4.0|
-|6.3.2|6.3.2|
-|6.3.1|6.3.1|
-|6.2.2|6.2.2|
-|5.2.2|5.2.2|
+| :------------- | :-------------- |
+| master         | 6.x             |
+| 6.5.2          | 6.5.2           |
+| 6.5.1          | 6.5.1           |
+| 6.5.0          | 6.5.0           |
+| 6.5.0          | 6.5.0           |
+| 6.4.3          | 6.4.3           |
+| 6.4.2          | 6.4.2           |
+| 6.4.1          | 6.4.1           |
+| 6.4.0          | 6.4.0           |
+| 6.3.2          | 6.3.2           |
+| 6.3.1          | 6.3.1           |
+| 6.2.2          | 6.2.2           |
+| 5.2.2          | 5.2.2           |
 
 安装方式：
 
@@ -46,7 +48,7 @@ HanLP Analyzer for ElasticSearch
 
    a. 使用elasticsearch插件脚本安装command如下：
    
-   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.5.1/elasticsearch-analysis-hanlp-6.5.1.zip`
+   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.5.2/elasticsearch-analysis-hanlp-6.5.2.zip`
 
 ### 2. 安装数据包
 
@@ -150,3 +152,49 @@ POST http://localhost:9200/twitter2/_analyze
   ]
 }
 ```
+
+远程词典配置
+----------
+
+```xml
+<properties>
+    <comment>HanLP Analyzer 扩展配置</comment>
+
+    <!--用户可以在这里配置远程扩展字典 -->
+    <entry key="remote_ext_dict">words_location</entry>
+
+    <!--用户可以在这里配置远程扩展停止词字典-->
+    <entry key="remote_ext_stopwords">stop_words_location</entry>
+</properties>
+```
+
+### 远程扩展字典
+
+其中words_location为URL或者URL+" "+词性，如：
+
+    1. http://localhost:8080/mydic
+    
+    2. http://localhost:8080/mydic nt
+
+第一个样例，是直接配置URL，词典内部每一行代表一个单词，格式遵从[单词] [词性A] [A的频次] [词性B] [B的频次] ... 如果不填词性则表示采用词典的默认词性n。
+
+第二个样例，配置词典URL，同时配置该词典的默认词性nt，当然词典内部同样遵循[单词] [词性A] [A的频次] [词性B] [B的频次] ... 如果不配置词性，则采用默认词性nt。
+
+### 远程扩展停止词字典
+
+其中stop_words_location为URL，如：
+
+    1. http://localhost:8080/mystopdic
+
+样例直接配置URL，词典内部每一行代表一个单词，不需要配置词性和频次，换行符用 \n 即可。
+
+
+**注意，所有的词典URL是需要满足条件即可完成分词热更新：**
+
+- 该 http 请求需要返回两个头部(header)，一个是 Last-Modified，一个是 ETag，这两者都是字符串类型，只要有一个发生变化，该插件就会去抓取新的分词进而更新词库。
+
+- 可以配置多个字典路径，中间用英文分号;间隔
+
+- URL每隔1分钟访问一次
+
+- 保证词典编码UTF-8
