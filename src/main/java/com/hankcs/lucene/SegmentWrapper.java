@@ -21,6 +21,8 @@ import java.util.Scanner;
 
 /**
  * @author hankcs
+ *
+ * 根据hankcs的代码稍作了一下修改
  */
 public class SegmentWrapper {
 
