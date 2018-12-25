@@ -4,10 +4,11 @@ HanLP Analyzer for ElasticSearch
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/dbe4103dc2da4b6b89b5562aacaa3c3f)](https://app.codacy.com/app/kennfalcon/elasticsearch-analysis-hanlp?utm_source=github.com&utm_medium=referral&utm_content=KennFalcon/elasticsearch-analysis-hanlp&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://travis-ci.com/KennFalcon/elasticsearch-analysis-hanlp.svg?branch=master)](https://travis-ci.com/KennFalcon/elasticsearch-analysis-hanlp)
 [![GitHub release](https://img.shields.io/github/release/KennFalcon/elasticsearch-analysis-hanlp.svg)](https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-此分词器基于HanLP，提供了HanLP中大部分的分词方式。(<a target="_blank" href="http://www.hankcs.com/nlp">http://www.hankcs.com/nlp</a>)
+此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
-🚩适配Elasticsearch 6.5.2，增加了远程词典的功能，功能类似于medcl大神的ik分词器插件(<a target="_blank" href="https://github.com/medcl/elasticsearch-analysis-ik">https://github.com/medcl/elasticsearch-analysis-ik</a>）,因为hanlp有词性的配置，所以远程自定义词典配置稍有不同，需要配置词性和频次。
+🚩适配Elasticsearch 6.5.2，增加了远程词典的功能，功能类似于medcl大神的[IK分词器插件](https://github.com/medcl/elasticsearch-analysis-ik),因为hanlp有词性的配置，所以远程自定义词典配置稍有不同，需要配置词性和频次。
 
 ----------
 
@@ -52,11 +53,11 @@ HanLP Analyzer for ElasticSearch
 
 ### 2. 安装数据包
 
-release包中存放的为HanLP源码中默认的分词数据，若要下载完整版数据包，请查看<a target="_blank" href="https://github.com/hankcs/HanLP/releases">https://github.com/hankcs/HanLP/releases</a>
+release包中存放的为HanLP源码中默认的分词数据，若要下载完整版数据包，请查看[HanLP Release](https://github.com/hankcs/HanLP/releases)。
 
 数据包目录：*ES_HOME*/analysis-hanlp
 
-**注：因原版数据包自定义词典部分文件为中文，这里的hanlp.properties中已修改为英文，请对应修改文件名**
+**注：因原版数据包自定义词典部分文件名为中文，这里的hanlp.properties中已修改为英文，请对应修改文件名**
 
 ### 3. 重启Elasticsearch
 

@@ -186,7 +186,7 @@ public class RemoteMonitor implements Runnable {
                     if (HanLP.Config.Normalization) {
                         word = CharTable.convert(word);
                     }
-                    logger.info("hanlp remote custom word: {}", word);
+                    logger.debug("hanlp remote custom word: {}", word);
                     CustomDictionary.insert(word, analysisNatureWithFrequency(defaultInfo.v2(), param));
                 }
                 in.close();
@@ -227,6 +227,7 @@ public class RemoteMonitor implements Runnable {
                         line = IOUtil.removeUTF8BOM(line);
                         firstLine = false;
                     }
+                    logger.debug("hanlp remote stop word: {}", line);
                     CoreStopWordDictionary.add(line);
                 }
                 in.close();
