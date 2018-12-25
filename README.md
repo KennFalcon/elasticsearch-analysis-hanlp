@@ -8,7 +8,7 @@ HanLP Analyzer for ElasticSearch
 
 此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
-🚩适配Elasticsearch 6.5.3，增加了远程词典的功能，功能类似于medcl大神的[IK分词器插件](https://github.com/medcl/elasticsearch-analysis-ik),因为hanlp有词性的配置，所以远程自定义词典配置稍有不同，需要配置词性和频次。
+🚩增加适配Elasticsearch 6.5.2、6.5.3、6.5.4版本，增加了远程词典的功能，功能类似于medcl大神的[IK分词器插件](https://github.com/medcl/elasticsearch-analysis-ik),因为hanlp有词性的配置，所以远程自定义词典配置稍有不同，需要配置词性和频次。
 
 ----------
 
@@ -18,6 +18,7 @@ HanLP Analyzer for ElasticSearch
 | Plugin version | Elastic version |
 | :------------- | :-------------- |
 | master         | 6.x             |
+| 6.5.4          | 6.5.4           |
 | 6.5.3          | 6.5.3           |
 | 6.5.2          | 6.5.2           |
 | 6.5.1          | 6.5.1           |
@@ -53,7 +54,7 @@ HanLP Analyzer for ElasticSearch
 
    a. 使用elasticsearch插件脚本安装command如下：
    
-   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.5.3/elasticsearch-analysis-hanlp-6.5.3.zip`
+   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.5.4/elasticsearch-analysis-hanlp-6.5.4.zip`
 
 ### 2. 安装数据包
 
