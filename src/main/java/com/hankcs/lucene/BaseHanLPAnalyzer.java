@@ -26,7 +26,7 @@ abstract class BaseHanLPAnalyzer extends Analyzer {
      * @param configuration 配置信息
      * @return 新segment
      */
-    Segment buildSegment(Segment segment, Configuration configuration) {
+    protected Segment buildSegment(Segment segment, Configuration configuration) {
         segment.enableIndexMode(configuration.isEnableIndexMode())
                 .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
                 .enableCustomDictionary(configuration.isEnableCustomDictionary())
@@ -38,13 +38,11 @@ abstract class BaseHanLPAnalyzer extends Analyzer {
                 .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging());
         if (configuration.isEnableTraditionalChineseMode()) {
             segment.enableIndexMode(false);
-            Segment inner = segment;
-            TraditionalChineseTokenizer.SEGMENT = inner;
-            segment = new Segment() {
+            TraditionalChineseTokenizer.SEGMENT = segment;
+            return new Segment() {
                 @Override
                 protected List<Term> segSentence(char[] sentence) {
-                    List<Term> termList = TraditionalChineseTokenizer.segment(new String(sentence));
-                    return termList;
+                    return TraditionalChineseTokenizer.segment(new String(sentence));
                 }
             };
         }
@@ -57,7 +55,7 @@ abstract class BaseHanLPAnalyzer extends Analyzer {
      * @param configuration 配置信息
      * @return Tokenizer
      */
-    Tokenizer buildBaseTokenizer(Segment segment, Configuration configuration) {
+    protected Tokenizer buildBaseTokenizer(Segment segment, Configuration configuration) {
         return AccessController.doPrivileged((PrivilegedAction<HanLPTokenizer>) () -> new HanLPTokenizer(segment, configuration));
     }
 }

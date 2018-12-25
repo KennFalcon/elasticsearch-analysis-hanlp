@@ -8,18 +8,17 @@ HanLP Analyzer for ElasticSearch
 
 此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
-🚩适配Elasticsearch 6.5.2，增加了远程词典的功能，功能类似于medcl大神的[IK分词器插件](https://github.com/medcl/elasticsearch-analysis-ik),因为hanlp有词性的配置，所以远程自定义词典配置稍有不同，需要配置词性和频次。
+🚩适配Elasticsearch 6.5.3，增加了远程词典的功能，功能类似于medcl大神的[IK分词器插件](https://github.com/medcl/elasticsearch-analysis-ik),因为hanlp有词性的配置，所以远程自定义词典配置稍有不同，需要配置词性和频次。
 
 ----------
 
 版本对应
 ----------
 
-### 1. 下载安装ES对应Plugin Release版本
-
 | Plugin version | Elastic version |
 | :------------- | :-------------- |
 | master         | 6.x             |
+| 6.5.3          | 6.5.3           |
 | 6.5.2          | 6.5.2           |
 | 6.5.1          | 6.5.1           |
 | 6.5.0          | 6.5.0           |
@@ -32,6 +31,11 @@ HanLP Analyzer for ElasticSearch
 | 6.3.1          | 6.3.1           |
 | 6.2.2          | 6.2.2           |
 | 5.2.2          | 5.2.2           |
+
+安装步骤
+----------
+
+### 1. 下载安装ES对应Plugin Release版本
 
 安装方式：
 
@@ -49,7 +53,7 @@ HanLP Analyzer for ElasticSearch
 
    a. 使用elasticsearch插件脚本安装command如下：
    
-   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.5.2/elasticsearch-analysis-hanlp-6.5.2.zip`
+   `./bin/elasticsearch-plugin install https://github.com/KennFalcon/elasticsearch-analysis-hanlp/releases/download/v6.5.3/elasticsearch-analysis-hanlp-6.5.3.zip`
 
 ### 2. 安装数据包
 
@@ -157,6 +161,8 @@ POST http://localhost:9200/twitter2/_analyze
 远程词典配置
 ----------
 
+配置文件为*ES_HOME*/config/analysis-hanlp/hanlp-remote.xml
+
 ```xml
 <properties>
     <comment>HanLP Analyzer 扩展配置</comment>
@@ -169,7 +175,7 @@ POST http://localhost:9200/twitter2/_analyze
 </properties>
 ```
 
-### 远程扩展字典
+### 1. 远程扩展字典
 
 其中words_location为URL或者URL+" "+词性，如：
 
@@ -181,7 +187,7 @@ POST http://localhost:9200/twitter2/_analyze
 
 第二个样例，配置词典URL，同时配置该词典的默认词性nt，当然词典内部同样遵循[单词] [词性A] [A的频次] [词性B] [B的频次] ... 如果不配置词性，则采用默认词性nt。
 
-### 远程扩展停止词字典
+### 2. 远程扩展停止词字典
 
 其中stop_words_location为URL，如：
 

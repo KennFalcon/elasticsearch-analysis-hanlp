@@ -4,10 +4,6 @@ import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Tokenizer;
-
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * @project: elasticsearch-analysis-hanlp
