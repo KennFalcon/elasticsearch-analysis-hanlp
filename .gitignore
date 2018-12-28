@@ -5,6 +5,7 @@ classes/
 */build
 */target
 *buildSrc/build
+target
 
 # Spring
 /spring-*/build
