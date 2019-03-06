@@ -7,6 +7,7 @@ import com.hankcs.hanlp.dictionary.CustomDictionary;
 import com.hankcs.hanlp.dictionary.other.CharTable;
 import com.hankcs.hanlp.dictionary.stopword.CoreStopWordDictionary;
 import com.hankcs.hanlp.utility.LexiconUtility;
+import com.hankcs.help.ESPluginLoggerFactory;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -17,7 +18,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.SpecialPermission;
 import org.elasticsearch.common.collect.Tuple;
-import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.core.internal.io.IOUtils;
 
 import java.io.BufferedReader;
@@ -36,7 +36,7 @@ import java.security.PrivilegedAction;
  */
 public class RemoteMonitor implements Runnable {
 
-    private static final Logger logger = Loggers.getLogger(RemoteMonitor.class);
+    private static final Logger logger = ESPluginLoggerFactory.getLogger(RemoteMonitor.class.getName());
 
     private static CloseableHttpClient httpclient = HttpClients.createDefault();
     /**

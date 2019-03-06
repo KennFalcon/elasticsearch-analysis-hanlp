@@ -1,8 +1,8 @@
 package com.hankcs.dic.config;
 
 import com.hankcs.dic.Dictionary;
+import com.hankcs.help.ESPluginLoggerFactory;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.core.internal.io.IOUtils;
 
 import java.io.FileInputStream;
@@ -26,7 +26,7 @@ public class RemoteDictConfig {
      */
     private static RemoteDictConfig singleton;
 
-    private static final Logger logger = Loggers.getLogger(RemoteDictConfig.class);
+    private static final Logger logger = ESPluginLoggerFactory.getLogger(RemoteDictConfig.class.getName());
 
     private static final String REMOTE_EXT_DICT = "remote_ext_dict";
 

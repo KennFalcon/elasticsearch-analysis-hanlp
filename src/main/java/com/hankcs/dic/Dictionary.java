@@ -4,8 +4,8 @@ import com.hankcs.cfg.Configuration;
 import com.hankcs.dic.cache.DictionaryFileCache;
 import com.hankcs.dic.config.RemoteDictConfig;
 import com.hankcs.hanlp.utility.Predefine;
+import com.hankcs.help.ESPluginLoggerFactory;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 
 import java.nio.file.Path;
@@ -33,7 +33,7 @@ public class Dictionary {
      */
     private static final String REMOTE_CONFIG_FILE_NAME = "hanlp-remote.xml";
 
-    private static final Logger logger = Loggers.getLogger(Dictionary.class);
+    private static final Logger logger = ESPluginLoggerFactory.getLogger(Dictionary.class.getName());
 
     private static ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
 

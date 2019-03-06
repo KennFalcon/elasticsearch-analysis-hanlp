@@ -43,6 +43,8 @@ public class Configuration {
 
     private boolean enableRemoteDict;
 
+    private boolean enableNormalization;
+
     @Inject
     public Configuration(Environment env, Settings settings) {
         this.environment = env;
@@ -60,6 +62,7 @@ public class Configuration {
         this.enableStopDictionary = settings.get("enable_stop_dictionary", "false").equals("true");
         this.enablePartOfSpeechTagging = settings.get("enable_part_of_speech_tagging", "false").equals("true");
         this.enableRemoteDict = settings.get("enable_remote_dict", "true").equals("true");
+        this.enableNormalization = settings.get("enable_normalization", "false").equals("true");
         Dictionary.initial(this);
     }
 
@@ -186,5 +189,13 @@ public class Configuration {
     public Configuration enableRemoteDict(boolean enableRemoteDict) {
         this.enableRemoteDict = enableRemoteDict;
         return this;
+    }
+
+    public boolean isEnableNormalization() {
+        return enableNormalization;
+    }
+
+    public void setEnableNormalization(boolean enableNormalization) {
+        this.enableNormalization = enableNormalization;
     }
 }

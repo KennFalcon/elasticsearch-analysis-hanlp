@@ -10,8 +10,8 @@ import com.hankcs.hanlp.dictionary.other.CharTable;
 import com.hankcs.hanlp.utility.LexiconUtility;
 import com.hankcs.hanlp.utility.Predefine;
 import com.hankcs.hanlp.utility.TextUtility;
+import com.hankcs.help.ESPluginLoggerFactory;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.common.logging.Loggers;
 
 import java.io.*;
 import java.util.LinkedHashSet;
@@ -27,7 +27,7 @@ import java.util.TreeMap;
  */
 public class CustomDictionaryUtility {
 
-    private static final Logger logger = Loggers.getLogger(CustomDictionaryUtility.class);
+    private static final Logger logger = ESPluginLoggerFactory.getLogger(CustomDictionaryUtility.class.getName());
 
     public static boolean reload() {
         CustomDictionary.dat.getSize();

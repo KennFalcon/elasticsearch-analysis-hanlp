@@ -62,7 +62,7 @@ public class HanLPTokenizer extends Tokenizer {
      */
     public HanLPTokenizer(Segment segment, Configuration configuration) {
         this.configuration = configuration;
-        this.segment = new SegmentWrapper(this.input, segment);
+        this.segment = new SegmentWrapper(this.input, segment, configuration);
     }
 
     @Override

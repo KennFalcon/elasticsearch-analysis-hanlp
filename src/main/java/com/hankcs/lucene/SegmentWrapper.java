@@ -10,8 +10,12 @@
  */
 package com.hankcs.lucene;
 
+import com.hankcs.cfg.Configuration;
+import com.hankcs.hanlp.dictionary.other.CharTable;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
+import com.hankcs.help.ESPluginLoggerFactory;
+import org.apache.logging.log4j.Logger;
 
 import java.io.Reader;
 import java.security.AccessController;
@@ -42,9 +46,14 @@ public class SegmentWrapper {
      */
     int offset;
 
-    public SegmentWrapper(Reader reader, Segment segment) {
+    Configuration configuration;
+
+    private static final Logger logger = ESPluginLoggerFactory.getLogger(SegmentWrapper.class.getName());
+
+    public SegmentWrapper(Reader reader, Segment segment, Configuration configuration) {
         scanner = createScanner(reader);
         this.segment = segment;
+        this.configuration = configuration;
     }
 
     /**
@@ -80,7 +89,16 @@ public class SegmentWrapper {
         }
 
         final String lineNeedSeg = line;
-        List<Term> termList = AccessController.doPrivileged((PrivilegedAction<List<Term>>) () -> segment.seg(lineNeedSeg));
+        List<Term> termList = AccessController.doPrivileged((PrivilegedAction<List<Term>>)() -> {
+            char[] text = lineNeedSeg.toCharArray();
+            if (configuration.isEnableNormalization()) {
+                AccessController.doPrivileged((PrivilegedAction) () -> {
+                    CharTable.normalization(text);
+                    return null;
+                });
+            }
+            return segment.seg(text);
+        });
         if (termList.size() == 0) {
             return null;
         }

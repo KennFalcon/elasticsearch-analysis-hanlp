@@ -2,8 +2,8 @@ package com.hankcs.dic.cache;
 
 import com.hankcs.cfg.Configuration;
 import com.hankcs.dic.DictionaryFile;
+import com.hankcs.help.ESPluginLoggerFactory;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.core.internal.io.IOUtils;
 import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 
@@ -23,16 +23,16 @@ import java.util.List;
  */
 public class DictionaryFileCache {
 
-    private static final Logger logger = Loggers.getLogger(DictionaryFileCache.class);
+    private static final Logger logger = ESPluginLoggerFactory.getLogger(DictionaryFileCache.class.getName());
 
     private static Path cachePath = null;
 
-    private static final String DICTIONAY_FILE_CACHE_RECORD_FILE = "hanlp.cache";
+    private static final String DICTIONARY_FILE_CACHE_RECORD_FILE = "hanlp.cache";
 
     private static List<DictionaryFile> customDictionaryFileList = new ArrayList<>();
 
     public static synchronized void configCachePath(Configuration configuration) {
-        cachePath = configuration.getEnvironment().pluginsFile().resolve(AnalysisHanLPPlugin.PLUGIN_NAME).resolve(DICTIONAY_FILE_CACHE_RECORD_FILE);
+        cachePath = configuration.getEnvironment().pluginsFile().resolve(AnalysisHanLPPlugin.PLUGIN_NAME).resolve(DICTIONARY_FILE_CACHE_RECORD_FILE);
     }
 
     public static void loadCache() {

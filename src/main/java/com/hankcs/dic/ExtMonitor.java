@@ -3,10 +3,10 @@ package com.hankcs.dic;
 import com.hankcs.dic.cache.DictionaryFileCache;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.utility.Predefine;
+import com.hankcs.help.ESPluginLoggerFactory;
 import com.hankcs.utility.CustomDictionaryUtility;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.SpecialPermission;
-import org.elasticsearch.common.logging.Loggers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +26,7 @@ import java.util.Properties;
  */
 public class ExtMonitor implements Runnable {
 
-    private static final Logger logger = Loggers.getLogger(ExtMonitor.class);
+    private static final Logger logger = ESPluginLoggerFactory.getLogger(ExtMonitor.class.getName());
 
     ExtMonitor() {
         SecurityManager sm = System.getSecurityManager();
