@@ -8,7 +8,7 @@ HanLP Analyzer for ElasticSearch
 
 此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
-🚩增加适配Elasticsearch 6.6.0、6.6.1版本，更新hanlp版本为1.7.2，增加了归一化配置enable_normalization，
+🚩增加适配Elasticsearch 6.6.0、6.6.1版本，更新hanlp版本为1.7.2，增加了归一化配置enable_normalization
 
 ----------
 
