@@ -1,9 +1,8 @@
 package com.hankcs.lucene;
 
-
 import com.hankcs.cfg.Configuration;
+import com.hankcs.dic.CoreStopWordDictionary;
 import com.hankcs.hanlp.corpus.tag.Nature;
-import com.hankcs.hanlp.dictionary.stopword.CoreStopWordDictionary;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
 import com.hankcs.hanlp.utility.TextUtility;
@@ -77,15 +76,19 @@ public class HanLPTokenizer extends Tokenizer {
                 break;
             }
             if (TextUtility.isBlank(term.word)) {
+                totalOffset += term.length();
                 continue;
             }
             if (configuration.isEnablePorterStemming() && term.nature == Nature.nx) {
                 term.word = stemmer.stem(term.word);
             }
             final Term copyTerm = term;
-            if ((!this.configuration.isEnableStopDictionary()) || (!AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> CoreStopWordDictionary.shouldRemove(copyTerm)))) {
+            if ((!this.configuration.isEnableStopDictionary()) || (!AccessController.doPrivileged(
+                (PrivilegedAction<Boolean>)() -> CoreStopWordDictionary.shouldRemove(copyTerm)))) {
                 position++;
                 unIncreased = false;
+            } else {
+                totalOffset += term.length();
             }
         }
         while (unIncreased);
@@ -93,9 +96,9 @@ public class HanLPTokenizer extends Tokenizer {
         if (term != null) {
             positionAttr.setPositionIncrement(position);
             termAtt.setEmpty().append(term.word);
-            offsetAtt.setOffset(correctOffset(totalOffset + term.offset),
-                    correctOffset(totalOffset + term.offset + term.word.length()));
+            offsetAtt.setOffset(correctOffset(totalOffset + term.offset), correctOffset(totalOffset + term.offset + term.word.length()));
             typeAtt.setType(term.nature == null ? "null" : term.nature.toString());
+            totalOffset += term.length();
             return true;
         } else {
             totalOffset += segment.offset;
