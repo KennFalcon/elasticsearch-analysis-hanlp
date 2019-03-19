@@ -5,6 +5,9 @@ import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
 import org.apache.lucene.analysis.Analyzer;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 /**
  * @project: elasticsearch-analysis-hanlp
  * @description: Hanlp默认分析器
@@ -27,7 +30,7 @@ public class HanLPAnalyzer extends BaseHanLPAnalyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Segment segment = buildSegment(HanLP.newSegment(), configuration);
+        Segment segment = buildSegment(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration);
         return new Analyzer.TokenStreamComponents(buildBaseTokenizer(segment, configuration));
     }
 }

@@ -28,14 +28,14 @@ abstract class BaseHanLPAnalyzer extends Analyzer {
      */
     protected Segment buildSegment(Segment segment, Configuration configuration) {
         segment.enableIndexMode(configuration.isEnableIndexMode())
-                .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
-                .enableCustomDictionary(configuration.isEnableCustomDictionary())
-                .enableTranslatedNameRecognize(configuration.isEnableTranslatedNameRecognize())
-                .enableJapaneseNameRecognize(configuration.isEnableJapaneseNameRecognize())
-                .enableOrganizationRecognize(configuration.isEnableOrganizationRecognize())
-                .enablePlaceRecognize(configuration.isEnablePlaceRecognize())
-                .enableNameRecognize(configuration.isEnableNameRecognize())
-                .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging());
+            .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
+            .enableCustomDictionary(configuration.isEnableCustomDictionary())
+            .enableTranslatedNameRecognize(configuration.isEnableTranslatedNameRecognize())
+            .enableJapaneseNameRecognize(configuration.isEnableJapaneseNameRecognize())
+            .enableOrganizationRecognize(configuration.isEnableOrganizationRecognize())
+            .enablePlaceRecognize(configuration.isEnablePlaceRecognize())
+            .enableNameRecognize(configuration.isEnableNameRecognize())
+            .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging());
         if (configuration.isEnableTraditionalChineseMode()) {
             segment.enableIndexMode(false);
             TraditionalChineseTokenizer.SEGMENT = segment;

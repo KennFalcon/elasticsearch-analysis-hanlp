@@ -1,9 +1,13 @@
 package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
+import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Other.DoubleArrayTrieSegment;
 import com.hankcs.hanlp.seg.Segment;
 import org.apache.lucene.analysis.Analyzer;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * @project: elasticsearch-analysis-hanlp
@@ -28,7 +32,7 @@ public class HanLPSpeedAnalyzer extends BaseHanLPAnalyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Segment segment = buildSegment(new DoubleArrayTrieSegment(), configuration);
+        Segment segment = buildSegment(AccessController.doPrivileged((PrivilegedAction<Segment>)DoubleArrayTrieSegment::new), configuration);
         return new Analyzer.TokenStreamComponents(buildBaseTokenizer(segment, configuration));
     }
 }
