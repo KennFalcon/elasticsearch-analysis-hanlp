@@ -1,7 +1,6 @@
 package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
-import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.NShort.NShortSegment;
 import com.hankcs.hanlp.seg.Segment;
 import org.apache.lucene.analysis.Analyzer;

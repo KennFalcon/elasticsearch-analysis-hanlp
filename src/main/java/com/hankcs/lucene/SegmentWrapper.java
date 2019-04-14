@@ -77,9 +77,6 @@ public class SegmentWrapper {
         }
         String line = scanner.next();
         while (isBlank(line)) {
-            if (line == null) {
-                return null;
-            }
             offset += line.length() + 1;
             if (scanner.hasNext()) {
                 line = scanner.next();
@@ -103,12 +100,14 @@ public class SegmentWrapper {
             return null;
         }
         termArray = termList.toArray(new Term[0]);
+
+        int lastOffset = offset;
         for (Term term : termArray) {
-            term.offset += offset;
+            term.offset = lastOffset;
+            lastOffset += term.length();
         }
         index = 0;
         offset += line.length() + 1;
-
         return termArray[index++];
     }
 

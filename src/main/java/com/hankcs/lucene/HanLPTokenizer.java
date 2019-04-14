@@ -73,7 +73,7 @@ public class HanLPTokenizer extends Tokenizer {
         do {
             term = segment.next();
             if (term == null) {
-                break;
+                return false;
             }
             if (TextUtility.isBlank(term.word)) {
                 totalOffset += term.length();
@@ -93,17 +93,12 @@ public class HanLPTokenizer extends Tokenizer {
         }
         while (unIncreased);
 
-        if (term != null) {
-            positionAttr.setPositionIncrement(position);
-            termAtt.setEmpty().append(term.word);
-            offsetAtt.setOffset(correctOffset(totalOffset + term.offset), correctOffset(totalOffset + term.offset + term.word.length()));
-            typeAtt.setType(term.nature == null ? "null" : term.nature.toString());
-            totalOffset += term.length();
-            return true;
-        } else {
-            totalOffset += segment.offset;
-            return false;
-        }
+        positionAttr.setPositionIncrement(position);
+        termAtt.setEmpty().append(term.word);
+        offsetAtt.setOffset(correctOffset(term.offset), correctOffset(term.offset + term.word.length()));
+        typeAtt.setType(term.nature == null ? "null" : term.nature.toString());
+        totalOffset += term.length();
+        return true;
     }
 
     @Override

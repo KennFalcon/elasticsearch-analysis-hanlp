@@ -1,7 +1,6 @@
 package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
-import com.hankcs.hanlp.seg.CRF.CRFSegment;
 import com.hankcs.hanlp.seg.Dijkstra.DijkstraSegment;
 import com.hankcs.hanlp.seg.Segment;
 import org.apache.lucene.analysis.Analyzer;
