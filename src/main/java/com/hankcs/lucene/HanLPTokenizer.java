@@ -5,6 +5,7 @@ import com.hankcs.dic.CoreStopWordDictionary;
 import com.hankcs.hanlp.corpus.tag.Nature;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
+import com.hankcs.hanlp.tokenizer.TraditionalChineseTokenizer;
 import com.hankcs.hanlp.utility.TextUtility;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.List;
 
 /**
  * Tokenizer，抄袭ansj的
@@ -61,7 +63,31 @@ public class HanLPTokenizer extends Tokenizer {
      */
     public HanLPTokenizer(Segment segment, Configuration configuration) {
         this.configuration = configuration;
+        buildSegment(segment, configuration);
         this.segment = new SegmentWrapper(this.input, segment, configuration);
+    }
+
+    protected Segment buildSegment(Segment segment, Configuration configuration) {
+        segment.enableIndexMode(configuration.isEnableIndexMode())
+                .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
+                .enableCustomDictionary(configuration.isEnableCustomDictionary())
+                .enableTranslatedNameRecognize(configuration.isEnableTranslatedNameRecognize())
+                .enableJapaneseNameRecognize(configuration.isEnableJapaneseNameRecognize())
+                .enableOrganizationRecognize(configuration.isEnableOrganizationRecognize())
+                .enablePlaceRecognize(configuration.isEnablePlaceRecognize())
+                .enableNameRecognize(configuration.isEnableNameRecognize())
+                .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging());
+        if (configuration.isEnableTraditionalChineseMode()) {
+            segment.enableIndexMode(false);
+            TraditionalChineseTokenizer.SEGMENT = segment;
+            return new Segment() {
+                @Override
+                protected List<Term> segSentence(char[] sentence) {
+                    return TraditionalChineseTokenizer.segment(new String(sentence));
+                }
+            };
+        }
+        return segment;
     }
 
     @Override
