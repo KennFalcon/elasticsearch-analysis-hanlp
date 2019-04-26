@@ -14,7 +14,7 @@ import java.security.PrivilegedAction;
  * @author: Kenn
  * @create: 2018-12-14 15:10
  */
-public class HanLPSpeedAnalyzer extends BaseHanLPAnalyzer {
+public class HanLPSpeedAnalyzer extends Analyzer {
     /**
      * 分词配置
      */
@@ -31,7 +31,6 @@ public class HanLPSpeedAnalyzer extends BaseHanLPAnalyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Segment segment = buildSegment(AccessController.doPrivileged((PrivilegedAction<Segment>)DoubleArrayTrieSegment::new), configuration);
-        return new Analyzer.TokenStreamComponents(buildBaseTokenizer(segment, configuration));
+        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)DoubleArrayTrieSegment::new), configuration));
     }
 }

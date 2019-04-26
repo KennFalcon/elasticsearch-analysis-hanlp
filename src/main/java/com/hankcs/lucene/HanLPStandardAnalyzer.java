@@ -14,7 +14,7 @@ import java.security.PrivilegedAction;
  * @author: Kenn
  * @create: 2018-12-14 15:10
  */
-public class HanLPStandardAnalyzer extends BaseHanLPAnalyzer {
+public class HanLPStandardAnalyzer extends Analyzer {
     /**
      * 分词配置
      */
@@ -30,7 +30,6 @@ public class HanLPStandardAnalyzer extends BaseHanLPAnalyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Segment segment = buildSegment(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration);
-        return new Analyzer.TokenStreamComponents(buildBaseTokenizer(segment, configuration));
+        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration));
     }
 }

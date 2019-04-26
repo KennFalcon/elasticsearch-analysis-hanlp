@@ -101,13 +101,12 @@ public class SegmentWrapper {
         }
         termArray = termList.toArray(new Term[0]);
 
-        int lastOffset = offset;
-        for (Term term : termArray) {
-            term.offset = lastOffset;
-            lastOffset += term.length();
+        for (Term term: termArray) {
+            term.offset = term.offset + offset;
+            logger.info("base offset: {}, word: {}, length: {}, offset: {}, nature: {}", offset, term.word, term.length(), term.offset, term.nature);
         }
+        offset += line.length();
         index = 0;
-        offset += line.length() + 1;
         return termArray[index++];
     }
 

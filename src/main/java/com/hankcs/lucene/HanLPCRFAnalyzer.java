@@ -15,7 +15,7 @@ import java.security.PrivilegedAction;
  * @create: 2018-12-14 15:10
  */
 @Deprecated
-public class HanLPCRFAnalyzer extends BaseHanLPAnalyzer {
+public class HanLPCRFAnalyzer extends Analyzer {
 
     private Configuration configuration;
 
@@ -29,7 +29,6 @@ public class HanLPCRFAnalyzer extends BaseHanLPAnalyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Segment segment = buildSegment(AccessController.doPrivileged((PrivilegedAction<Segment>)CRFSegment::new), configuration);
-        return new Analyzer.TokenStreamComponents(buildBaseTokenizer(segment, configuration));
+        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)CRFSegment::new), configuration));
     }
 }
