@@ -14,8 +14,6 @@ import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.dictionary.other.CharTable;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
-import com.hankcs.help.ESPluginLoggerFactory;
-import org.apache.logging.log4j.Logger;
 
 import java.io.Reader;
 import java.security.AccessController;
@@ -47,8 +45,6 @@ public class SegmentWrapper {
     int offset;
 
     Configuration configuration;
-
-    private static final Logger logger = ESPluginLoggerFactory.getLogger(SegmentWrapper.class.getName());
 
     public SegmentWrapper(Reader reader, Segment segment, Configuration configuration) {
         scanner = createScanner(reader);
@@ -103,7 +99,6 @@ public class SegmentWrapper {
 
         for (Term term: termArray) {
             term.offset = term.offset + offset;
-            logger.info("base offset: {}, word: {}, length: {}, offset: {}, nature: {}", offset, term.word, term.length(), term.offset, term.nature);
         }
         offset += line.length();
         index = 0;

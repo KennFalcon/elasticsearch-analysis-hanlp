@@ -6,8 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.apache.lucene.util.RamUsageEstimator.NUM_BYTES_CHAR;
-
 /**
  * 抄袭lucene的英文处理
  * Stemmer, implementing the Porter Stemming Algorithm
@@ -602,7 +600,7 @@ public class PorterStemmer
         reset();
         if (b.length < wordLen)
         {
-            b = new char[ArrayUtil.oversize(wordLen, NUM_BYTES_CHAR)];
+            b = new char[ArrayUtil.oversize(wordLen, Character.BYTES)];
         }
         System.arraycopy(wordBuffer, offset, b, 0, wordLen);
         i = wordLen;
