@@ -33,7 +33,7 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
     private Configuration configuration;
 
     public HanLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings, HanLPType hanLPType) {
-        super(indexSettings, name, settings);
+        super(indexSettings, settings);
         this.hanLPType = hanLPType;
         this.configuration = new Configuration(env, settings);
     }
@@ -74,10 +74,6 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
     @Override
     public Tokenizer create() {
         switch (this.hanLPType) {
-            case HANLP:
-                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration);
-            case STANDARD:
-                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration);
             case INDEX:
                 configuration.enableIndexMode(true);
                 return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration);
@@ -96,6 +92,8 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
             case SPEED:
                 configuration.enableCustomDictionary(false);
                 return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)DoubleArrayTrieSegment::new), configuration);
+            case HANLP:
+            case STANDARD:
             default:
                 return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration);
         }
