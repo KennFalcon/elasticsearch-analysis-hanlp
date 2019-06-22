@@ -8,7 +8,7 @@ HanLP Analyzer for ElasticSearch
 
 此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
-🚩适配Elasticsearch 7.0.0版本
+🚩适配Elasticsearch 7.0.1、7.1.0、7.1.1版本
 
 ----------
 
@@ -18,6 +18,9 @@ HanLP Analyzer for ElasticSearch
 | Plugin version | Elastic version |
 | :------------- | :-------------- |
 | master         | 7.x             |
+| 7.1.1          | 7.1.1           |
+| 7.1.0          | 7.1.0           |
+| 7.0.1          | 7.0.1           |
 | 7.0.0          | 7.0.0           |
 | 6.7.1          | 6.7.1           |
 | 6.7.0          | 6.7.0           | 
