@@ -10,7 +10,7 @@
     <description>HanLP Analyzer for ElasticSearch</description>
 
     <properties>
-        <elasticsearch.version>7.1.1</elasticsearch.version>
+        <elasticsearch.version>7.2.0</elasticsearch.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <elasticsearch.assembly.descriptor>${project.basedir}/src/main/assemblies/plugin.xml</elasticsearch.assembly.descriptor>
@@ -19,7 +19,7 @@
         <elasticsearch.plugin.jvm>true</elasticsearch.plugin.jvm>
         <tests.rest.load_packaged>false</tests.rest.load_packaged>
         <skip.unit.tests>true</skip.unit.tests>
-        <hanlp.version>portable-1.7.3</hanlp.version>
+        <hanlp.version>portable-1.7.4</hanlp.version>
         <javac.src.version>1.8</javac.src.version>
         <javac.target.version>1.8</javac.target.version>
     </properties>
