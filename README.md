@@ -8,8 +8,102 @@ HanLP Analyzer for ElasticSearch
 
 此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
-🚩更新HanLP版本为1.7.4，适配Elasticsearch；修复因换行符导致的offset问题，从而导致的高亮问题 
-  
+🚩 更新信息如下：
+
+1. 更新HanLP版本为1.7.4，适配Elasticsearch
+2. 修复因换行符导致的offset问题，从而导致的高亮问题
+3. 修复CRF和NLP分词设置问题（但这两种分词模式目前需要单独的模型文件，模型文件请自行去HanLP处下载）
+4. 自定义分词类型，增加配置enable_custom_config配置，当配置为enable_custom_config才可使用自定义分词配置
+5. 更改JDK编译版本（因后面ES版本将要求JDK11或以上），所以本版本直接升级编译为JDK12，测试过JDK8也可编译通过
+例如：
+
+```text
+PUT test
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_hanlp_analyzer": {
+          "tokenizer": "my_hanlp"
+        }
+      },
+      "tokenizer": {
+        "my_hanlp": {
+          "type": "hanlp",
+          "enable_stop_dictionary": true,
+          "enable_custom_config": true
+        }
+      }
+    }
+  }
+}
+```
+
+```text
+POST test/_analyze
+{
+  "text": "美国,|=阿拉斯加州发生8.0级地震",
+  "analyzer": "my_hanlp_analyzer"
+}
+```
+
+结果：
+```text
+{
+  "tokens" : [
+    {
+      "token" : "美国",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "nsf",
+      "position" : 0
+    },
+    {
+      "token" : ",|=",
+      "start_offset" : 0,
+      "end_offset" : 3,
+      "type" : "w",
+      "position" : 1
+    },
+    {
+      "token" : "阿拉斯加州",
+      "start_offset" : 0,
+      "end_offset" : 5,
+      "type" : "nsf",
+      "position" : 2
+    },
+    {
+      "token" : "发生",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "v",
+      "position" : 3
+    },
+    {
+      "token" : "8.0",
+      "start_offset" : 0,
+      "end_offset" : 3,
+      "type" : "m",
+      "position" : 4
+    },
+    {
+      "token" : "级",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "q",
+      "position" : 5
+    },
+    {
+      "token" : "地震",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "n",
+      "position" : 6
+    }
+  ]
+}
+
+```
 
 ----------
 
@@ -106,7 +200,7 @@ hanlp_n_short: N-最短路分词
 
 hanlp_dijkstra: 最短路分词
 
-hanlp_crf: CRF分词（在hanlp 1.6.6已开始废弃）
+hanlp_crf: CRF分词（已有最新方式）
 
 hanlp_speed: 极速词典分词
 
