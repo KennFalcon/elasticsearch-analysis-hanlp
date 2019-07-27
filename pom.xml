@@ -20,8 +20,8 @@
         <tests.rest.load_packaged>false</tests.rest.load_packaged>
         <skip.unit.tests>true</skip.unit.tests>
         <hanlp.version>portable-1.7.4</hanlp.version>
-        <javac.src.version>1.8</javac.src.version>
-        <javac.target.version>1.8</javac.target.version>
+        <javac.src.version>12</javac.src.version>
+        <javac.target.version>12</javac.target.version>
     </properties>
 
     <developers>
