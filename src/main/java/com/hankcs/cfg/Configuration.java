@@ -47,6 +47,8 @@ public class Configuration {
 
     private boolean enableOffset;
 
+    private boolean enableCustomConfig;
+
     @Inject
     public Configuration(Environment env, Settings settings) {
         this.environment = env;
@@ -66,6 +68,7 @@ public class Configuration {
         this.enableRemoteDict = settings.get("enable_remote_dict", "true").equals("true");
         this.enableNormalization = settings.get("enable_normalization", "false").equals("true");
         this.enableOffset = settings.get("enable_offset", "true").equals("true");
+        this.enableCustomConfig = settings.get("enable_custom_config", "false").equals("true");
         Dictionary.initial(this);
     }
 
@@ -209,5 +212,13 @@ public class Configuration {
     public Configuration enableOffset(boolean enableOffset) {
         this.enableOffset = enableOffset;
         return this;
+    }
+
+    public boolean isEnableCustomConfig() {
+        return enableCustomConfig;
+    }
+
+    public void setEnableCustomConfig(boolean enableCustomConfig) {
+        this.enableCustomConfig = enableCustomConfig;
     }
 }

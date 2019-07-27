@@ -38,6 +38,9 @@ public class TokenizerBuilder {
      * @return 新segment
      */
     private static Segment segment(Segment segment, Configuration configuration) {
+        if (!configuration.isEnableCustomConfig()) {
+            return segment;
+        }
         segment.enableIndexMode(configuration.isEnableIndexMode())
             .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
             .enableCustomDictionary(configuration.isEnableCustomDictionary())
