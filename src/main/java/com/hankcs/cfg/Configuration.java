@@ -201,8 +201,9 @@ public class Configuration {
         return enableNormalization;
     }
 
-    public void setEnableNormalization(boolean enableNormalization) {
+    public Configuration enableNormalization(boolean enableNormalization) {
         this.enableNormalization = enableNormalization;
+        return this;
     }
 
     public boolean isEnableOffset() {
@@ -218,7 +219,8 @@ public class Configuration {
         return enableCustomConfig;
     }
 
-    public void setEnableCustomConfig(boolean enableCustomConfig) {
+    public Configuration enableCustomConfig(boolean enableCustomConfig) {
         this.enableCustomConfig = enableCustomConfig;
+        return this;
     }
 }
