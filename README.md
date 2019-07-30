@@ -13,8 +13,9 @@ HanLP Analyzer for ElasticSearch
 1. 更新HanLP版本为1.7.4，适配Elasticsearch 7.2.0
 2. 修复因换行符导致的offset问题，从而导致的高亮问题
 3. 修复CRF和NLP分词设置问题（但这两种分词模式目前需要单独的模型文件，模型文件请自行去HanLP处下载）
-4. 自定义分词类型，增加配置enable_custom_config配置，当配置为enable_custom_config才可使用自定义分词配置
-5. 更改JDK编译版本（因后面ES版本将要求JDK11或以上），所以本版本直接升级编译为JDK12，测试过JDK8也可编译通过
+4. 更改JDK编译版本（因后面ES版本将要求JDK11或以上），所以本版本直接升级编译为JDK12，测试过JDK8也可编译通过
+5. 自定义分词类型，增加配置enable_custom_config配置，当配置为enable_custom_config才可使用自定义分词配置
+
 例如：
 
 ```text
