@@ -12,6 +12,8 @@ HanLP Analyzer for ElasticSearch
 1. 适配Elasticsearch 7.2.1和7.3.0版本
 2. 修改offset设置机制，默认所有分词器打开offset设置，自定义分词时需要自行设置enable_offset配置
 
+吐槽一下：Elasticsearch竟然连续两天发布了这两个版本，不知道发生了什么，有知道的大佬告知一下~
+
 ----------
 
 版本对应
