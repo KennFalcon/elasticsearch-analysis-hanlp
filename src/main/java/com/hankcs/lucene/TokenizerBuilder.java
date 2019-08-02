@@ -39,7 +39,7 @@ public class TokenizerBuilder {
      */
     private static Segment segment(Segment segment, Configuration configuration) {
         if (!configuration.isEnableCustomConfig()) {
-            return segment;
+            return segment.enableOffset(true);
         }
         segment.enableIndexMode(configuration.isEnableIndexMode())
             .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
