@@ -8,106 +8,9 @@ HanLP Analyzer for ElasticSearch
 
 此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
-🚩 
-最近因为自己的问题，导致发布了两个存在重大问题的版本，在此表示一下歉意
-
-更新信息如下：
-
-1. 更新HanLP版本为1.7.4，适配Elasticsearch 7.2.0
-2. 修复因换行符导致的offset问题，从而导致的高亮问题
-3. 修复CRF和NLP分词设置问题（但这两种分词模式目前需要单独的模型文件，模型文件请自行去HanLP处下载）
-4. 更改JDK编译版本（因后面ES版本将要求JDK11或以上），所以本版本直接升级编译为JDK12，测试过JDK8也可编译通过
-5. 自定义分词类型，增加配置enable_custom_config配置，当配置为enable_custom_config才可使用自定义分词配置
-
-例如：
-
-```text
-PUT test
-{
-  "settings": {
-    "analysis": {
-      "analyzer": {
-        "my_hanlp_analyzer": {
-          "tokenizer": "my_hanlp"
-        }
-      },
-      "tokenizer": {
-        "my_hanlp": {
-          "type": "hanlp",
-          "enable_stop_dictionary": true,
-          "enable_custom_config": true
-        }
-      }
-    }
-  }
-}
-```
-
-```text
-POST test/_analyze
-{
-  "text": "美国,|=阿拉斯加州发生8.0级地震",
-  "analyzer": "my_hanlp_analyzer"
-}
-```
-
-结果：
-```text
-{
-  "tokens" : [
-    {
-      "token" : "美国",
-      "start_offset" : 0,
-      "end_offset" : 2,
-      "type" : "nsf",
-      "position" : 0
-    },
-    {
-      "token" : ",|=",
-      "start_offset" : 0,
-      "end_offset" : 3,
-      "type" : "w",
-      "position" : 1
-    },
-    {
-      "token" : "阿拉斯加州",
-      "start_offset" : 0,
-      "end_offset" : 5,
-      "type" : "nsf",
-      "position" : 2
-    },
-    {
-      "token" : "发生",
-      "start_offset" : 0,
-      "end_offset" : 2,
-      "type" : "v",
-      "position" : 3
-    },
-    {
-      "token" : "8.0",
-      "start_offset" : 0,
-      "end_offset" : 3,
-      "type" : "m",
-      "position" : 4
-    },
-    {
-      "token" : "级",
-      "start_offset" : 0,
-      "end_offset" : 1,
-      "type" : "q",
-      "position" : 5
-    },
-    {
-      "token" : "地震",
-      "start_offset" : 0,
-      "end_offset" : 2,
-      "type" : "n",
-      "position" : 6
-    }
-  ]
-}
-
-```
+🚩 更新日志：
+1. 适配Elasticsearch 7.2.1和7.3.0版本
+2. 修改offset设置机制，默认所有分词器打开offset设置，自定义分词时需要自行设置enable_offset配置
 
 ----------
 
@@ -117,6 +20,8 @@ POST test/_analyze
 | Plugin version | Elastic version |
 | :------------- | :-------------- |
 | master         | 7.x             |
+| 7.3.0          | 7.3.0           |
+| 7.2.1          | 7.2.1           |
 | 7.2.0          | 7.2.0           |
 | 7.1.1          | 7.1.1           |
 | 7.1.0          | 7.1.0           |
@@ -315,3 +220,117 @@ POST http://localhost:9200/twitter2/_analyze
 - URL每隔1分钟访问一次
 
 - 保证词典编码UTF-8
+
+自定义分词配置
+----------
+
+HanLP在提供了各类分词方式的基础上，也提供了一系列的分词配置，分词插件也提供了相关的分词配置，我们可以在通过如下配置来自定义自己的分词器：
+
+| Config                               | Elastic version     |
+| :----------------------------------- | :------------------ |
+| enable_custom_config                 | 是否开启自定义配置    |
+| enable_index_mode                    | 是否是索引分词        |
+| enable_number_quantifier_recognize   | 是否识别数字和量词    |
+| enable_custom_dictionary             | 是否加载用户词典      |
+| enable_translated_name_recognize     | 是否识别音译人名      |
+| enable_japanese_name_recognize       | 是否识别日本人名      |
+| enable_organization_recognize        | 是否识别机构         |
+| enable_place_recognize               | 是否识别地名         |
+| enable_name_recognize                | 是否识别中国人名      | 
+| enable_traditional_chinese_mode      | 是否开启繁体中文      |
+| enable_stop_dictionary               | 是否启用停用词        |
+| enable_part_of_speech_tagging        | 是否开启词性标注      |
+| enable_remote_dict                   | 是否开启远程词典      |
+| enable_normalization                 | 是否执行字符正规化    |
+| enable_offset                        | 是否计算偏移量        |
+
+注意： 如果要采用如上配置配置自定义分词，需要设置enable_custom_config为true
+
+例如：
+```text
+PUT test
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_hanlp_analyzer": {
+          "tokenizer": "my_hanlp"
+        }
+      },
+      "tokenizer": {
+        "my_hanlp": {
+          "type": "hanlp",
+          "enable_stop_dictionary": true,
+          "enable_custom_config": true
+        }
+      }
+    }
+  }
+}
+```
+
+```text
+POST test/_analyze
+{
+  "text": "美国,|=阿拉斯加州发生8.0级地震",
+  "analyzer": "my_hanlp_analyzer"
+}
+```
+
+结果：
+```text
+{
+  "tokens" : [
+    {
+      "token" : "美国",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "nsf",
+      "position" : 0
+    },
+    {
+      "token" : ",|=",
+      "start_offset" : 0,
+      "end_offset" : 3,
+      "type" : "w",
+      "position" : 1
+    },
+    {
+      "token" : "阿拉斯加州",
+      "start_offset" : 0,
+      "end_offset" : 5,
+      "type" : "nsf",
+      "position" : 2
+    },
+    {
+      "token" : "发生",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "v",
+      "position" : 3
+    },
+    {
+      "token" : "8.0",
+      "start_offset" : 0,
+      "end_offset" : 3,
+      "type" : "m",
+      "position" : 4
+    },
+    {
+      "token" : "级",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "q",
+      "position" : 5
+    },
+    {
+      "token" : "地震",
+      "start_offset" : 0,
+      "end_offset" : 2,
+      "type" : "n",
+      "position" : 6
+    }
+  ]
+}
+
+```
