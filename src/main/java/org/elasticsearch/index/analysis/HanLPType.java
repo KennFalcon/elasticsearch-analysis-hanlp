@@ -34,7 +34,6 @@ public enum HanLPType {
     /**
      * CRF分词
      */
-    @Deprecated
     CRF,
     /**
      * 极速词典分词

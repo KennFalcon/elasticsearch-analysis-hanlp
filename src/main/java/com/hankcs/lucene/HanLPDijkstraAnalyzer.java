@@ -31,6 +31,8 @@ public class HanLPDijkstraAnalyzer extends Analyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)DijkstraSegment::new), configuration));
+        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(
+            AccessController.doPrivileged((PrivilegedAction<Segment>)() -> new DijkstraSegment().enableCustomDictionary(
+                false).enablePlaceRecognize(true).enableOrganizationRecognize(true)), configuration));
     }
 }

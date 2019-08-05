@@ -19,7 +19,7 @@
         <elasticsearch.plugin.jvm>true</elasticsearch.plugin.jvm>
         <tests.rest.load_packaged>false</tests.rest.load_packaged>
         <skip.unit.tests>true</skip.unit.tests>
-        <hanlp.version>portable-1.7.3</hanlp.version>
+        <hanlp.version>portable-1.7.4</hanlp.version>
         <javac.src.version>1.8</javac.src.version>
         <javac.target.version>1.8</javac.target.version>
     </properties>
@@ -154,6 +154,16 @@
             <id>release</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.1.2</version>
+                        <configuration>
+                            <excludes>
+                                <exclude>hanlp.properties</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>

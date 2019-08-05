@@ -28,21 +28,21 @@ import java.util.Scanner;
  */
 public class SegmentWrapper {
 
-    Scanner scanner;
+    private Scanner scanner;
 
-    Segment segment;
+    private Segment segment;
     /**
      * 因为next是单个term出去的，所以在这里做一个记录
      */
-    Term[] termArray;
+    private Term[] termArray;
     /**
      * termArray下标
      */
-    int index;
+    private int index;
     /**
      * term的偏移量，由于wrapper是按行读取的，必须对term.offset做一个校正
      */
-    int offset;
+    private int offset;
 
     Configuration configuration;
 
@@ -50,6 +50,11 @@ public class SegmentWrapper {
         scanner = createScanner(reader);
         this.segment = segment;
         this.configuration = configuration;
+    }
+
+    public SegmentWrapper(Reader reader, Segment segment) {
+        scanner = createScanner(reader);
+        this.segment = segment;
     }
 
     /**
@@ -68,23 +73,26 @@ public class SegmentWrapper {
         if (termArray != null && index < termArray.length) {
             return termArray[index++];
         }
-        if (!scanner.hasNext()) {
+        if (!scanner.hasNextLine()) {
             return null;
         }
-        String line = scanner.next();
+        String line = scanner.nextLine();
         while (isBlank(line)) {
             offset += line.length() + 1;
-            if (scanner.hasNext()) {
-                line = scanner.next();
+            if (scanner.hasNextLine()) {
+                line = scanner.nextLine();
             } else {
                 return null;
             }
+        }
+        if (offset != 0) {
+            offset += 1;
         }
 
         final String lineNeedSeg = line;
         List<Term> termList = AccessController.doPrivileged((PrivilegedAction<List<Term>>)() -> {
             char[] text = lineNeedSeg.toCharArray();
-            if (configuration.isEnableNormalization()) {
+            if (configuration != null && configuration.isEnableNormalization()) {
                 AccessController.doPrivileged((PrivilegedAction) () -> {
                     CharTable.normalization(text);
                     return null;
