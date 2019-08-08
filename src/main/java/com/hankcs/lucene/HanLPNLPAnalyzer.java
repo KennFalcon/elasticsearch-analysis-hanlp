@@ -2,15 +2,26 @@ package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.model.perceptron.PerceptronLexicalAnalyzer;
+import com.hankcs.hanlp.seg.Segment;
+import com.hankcs.help.ESPluginLoggerFactory;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Tokenizer;
+
+import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
- * NLP分析器
- *
- * @author Kenn
+ * @project: elasticsearch-analysis-hanlp
+ * @description: NLP分析器
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
 public class HanLPNLPAnalyzer extends Analyzer {
+
+    private static final Logger logger = ESPluginLoggerFactory.getLogger(HanLPNLPAnalyzer.class.getName());
+
     /**
      * 分词配置
      */
@@ -18,17 +29,22 @@ public class HanLPNLPAnalyzer extends Analyzer {
 
     public HanLPNLPAnalyzer(Configuration configuration) {
         this.configuration = configuration;
-        this.configuration.enableNameRecognize(true).enableTranslatedNameRecognize(true)
-                .enableJapaneseNameRecognize(true).enablePlaceRecognize(true).enableOrganizationRecognize(true)
-                .enablePartOfSpeechTagging(true);
     }
 
     public HanLPNLPAnalyzer() {
         super();
     }
 
+    @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Tokenizer tokenizer = new HanLPTokenizer(HanLP.newSegment(), configuration);
-        return new Analyzer.TokenStreamComponents(tokenizer);
+        return new Analyzer.TokenStreamComponents(
+            TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)() -> {
+                try {
+                    return new PerceptronLexicalAnalyzer();
+                } catch (IOException e) {
+                    logger.error("can not use nlp analyzer, provider default", e);
+                    return HanLP.newSegment();
+                }
+            }), configuration));
     }
 }

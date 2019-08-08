@@ -50,5 +50,25 @@
                 <exclude>org.apache.lucene:lucene-sandbox</exclude>
             </excludes>
         </dependencySet>
+        <dependencySet>
+            <outputDirectory>elasticsearch</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <includes>
+                <include>com.fasterxml.jackson.core:jackson-databind</include>
+                <include>com.fasterxml.jackson.core:jackson-annotations</include>
+            </includes>
+            <excludes>
+                <exclude>com.fasterxml.jackson.core:jackson-core</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>elasticsearch</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <includes>
+                <include>org.apache.httpcomponents:httpclient</include>
+            </includes>
+        </dependencySet>
     </dependencySets>
 </assembly>

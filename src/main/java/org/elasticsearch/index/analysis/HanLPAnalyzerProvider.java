@@ -8,7 +8,10 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 
 /**
- * @author Kenn
+ * @project: elasticsearch-analysis-hanlp
+ * @description: Hanlp analyzer provider
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
 public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyzer> {
 
@@ -44,6 +47,7 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
                 break;
             default:
                 analyzer = null;
+                break;
         }
     }
 
@@ -71,6 +75,7 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
         return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.DIJKSTRA);
     }
 
+    @Deprecated
     public static HanLPAnalyzerProvider getHanLPCRFAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.CRF);
     }
@@ -79,6 +84,7 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
         return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.SPEED);
     }
 
+    @Override
     public Analyzer get() {
         return this.analyzer;
     }

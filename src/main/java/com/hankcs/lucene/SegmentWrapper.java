@@ -10,36 +10,49 @@
  */
 package com.hankcs.lucene;
 
+import com.hankcs.cfg.Configuration;
+import com.hankcs.hanlp.dictionary.other.CharTable;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
 
-import java.io.IOException;
 import java.io.Reader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.Scanner;
 
 /**
  * @author hankcs
+ *
+ * 根据hankcs的代码稍作了一下修改
  */
-public class SegmentWrapper
-{
-    Scanner scanner;
-    Segment segment;
+public class SegmentWrapper {
+
+    private Scanner scanner;
+
+    private Segment segment;
     /**
      * 因为next是单个term出去的，所以在这里做一个记录
      */
-    Term[] termArray;
+    private Term[] termArray;
     /**
      * termArray下标
      */
-    int index;
+    private int index;
     /**
      * term的偏移量，由于wrapper是按行读取的，必须对term.offset做一个校正
      */
-    int offset;
+    private int offset;
 
-    public SegmentWrapper(Reader reader, Segment segment)
-    {
+    Configuration configuration;
+
+    public SegmentWrapper(Reader reader, Segment segment, Configuration configuration) {
+        scanner = createScanner(reader);
+        this.segment = segment;
+        this.configuration = configuration;
+    }
+
+    public SegmentWrapper(Reader reader, Segment segment) {
         scanner = createScanner(reader);
         this.segment = segment;
     }
@@ -49,40 +62,54 @@ public class SegmentWrapper
      *
      * @param reader
      */
-    public void reset(Reader reader)
-    {
+    public void reset(Reader reader) {
         scanner = createScanner(reader);
         termArray = null;
         index = 0;
         offset = 0;
     }
 
-    public Term next() throws IOException
-    {
-        if (termArray != null && index < termArray.length) return termArray[index++];
-        if (!scanner.hasNext()) return null;
-        String line = scanner.next();
-        while (isBlank(line))
-        {
-            if (line == null) return null;
+    public Term next() {
+        if (termArray != null && index < termArray.length) {
+            return termArray[index++];
+        }
+        if (!scanner.hasNextLine()) {
+            return null;
+        }
+        String line = scanner.nextLine();
+        while (isBlank(line)) {
             offset += line.length() + 1;
-            if (scanner.hasNext()) {
-              line = scanner.next();
+            if (scanner.hasNextLine()) {
+                line = scanner.nextLine();
             } else {
-              return null;
+                return null;
             }
         }
-
-        List<Term> termList = segment.seg(line);
-        if (termList.size() == 0) return null;
-        termArray = termList.toArray(new Term[0]);
-        for (Term term : termArray)
-        {
-            term.offset += offset;
+        if (offset != 0) {
+            offset += 1;
         }
-        index = 0;
-        offset += line.length() + 1;
 
+        final String lineNeedSeg = line;
+        List<Term> termList = AccessController.doPrivileged((PrivilegedAction<List<Term>>)() -> {
+            char[] text = lineNeedSeg.toCharArray();
+            if (configuration != null && configuration.isEnableNormalization()) {
+                AccessController.doPrivileged((PrivilegedAction) () -> {
+                    CharTable.normalization(text);
+                    return null;
+                });
+            }
+            return segment.seg(text);
+        });
+        if (termList.size() == 0) {
+            return null;
+        }
+        termArray = termList.toArray(new Term[0]);
+
+        for (Term term: termArray) {
+            term.offset = term.offset + offset;
+        }
+        offset += line.length();
+        index = 0;
         return termArray[index++];
     }
 
@@ -92,25 +119,20 @@ public class SegmentWrapper
      * @param cs
      * @return
      */
-    private static boolean isBlank(CharSequence cs)
-    {
+    private static boolean isBlank(CharSequence cs) {
         int strLen;
-        if (cs == null || (strLen = cs.length()) == 0)
-        {
+        if (cs == null || (strLen = cs.length()) == 0) {
             return true;
         }
-        for (int i = 0; i < strLen; i++)
-        {
-            if (!Character.isWhitespace(cs.charAt(i)))
-            {
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(cs.charAt(i))) {
                 return false;
             }
         }
         return true;
     }
 
-    private static Scanner createScanner(Reader reader)
-    {
+    private static Scanner createScanner(Reader reader) {
         return new Scanner(reader).useDelimiter("\n");
     }
 }

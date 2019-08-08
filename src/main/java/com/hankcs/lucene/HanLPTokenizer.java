@@ -1,12 +1,11 @@
 package com.hankcs.lucene;
 
-
 import com.hankcs.cfg.Configuration;
+import com.hankcs.dic.CoreStopWordDictionary;
 import com.hankcs.hanlp.corpus.tag.Nature;
-import com.hankcs.hanlp.dictionary.stopword.CoreStopWordDictionary;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
-import com.hankcs.hanlp.tokenizer.TraditionalChineseTokenizer;
+import com.hankcs.hanlp.utility.TextUtility;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
@@ -15,7 +14,8 @@ import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.List;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * Tokenizer，抄袭ansj的
@@ -61,27 +61,7 @@ public class HanLPTokenizer extends Tokenizer {
      */
     public HanLPTokenizer(Segment segment, Configuration configuration) {
         this.configuration = configuration;
-        segment.enableIndexMode(configuration.isEnableIndexMode())
-                .enableNumberQuantifierRecognize(configuration.isEnableNumberQuantifierRecognize())
-                .enableCustomDictionary(configuration.isEnableCustomDictionary())
-                .enableTranslatedNameRecognize(configuration.isEnableTranslatedNameRecognize())
-                .enableJapaneseNameRecognize(configuration.isEnableJapaneseNameRecognize())
-                .enableOrganizationRecognize(configuration.isEnableOrganizationRecognize())
-                .enablePlaceRecognize(configuration.isEnablePlaceRecognize())
-                .enableNameRecognize(configuration.isEnableNameRecognize())
-                .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging());
-        if (configuration.isEnableTraditionalChineseMode()) {
-            segment.enableIndexMode(false);
-            Segment inner = segment;
-            TraditionalChineseTokenizer.SEGMENT = inner;
-            segment = new Segment() {
-                protected List<Term> segSentence(char[] sentence) {
-                    List<Term> termList = TraditionalChineseTokenizer.segment(new String(sentence));
-                    return termList;
-                }
-            };
-        }
-        this.segment = new SegmentWrapper(this.input, segment);
+        this.segment = new SegmentWrapper(this.input, segment, configuration);
     }
 
     @Override
@@ -89,34 +69,36 @@ public class HanLPTokenizer extends Tokenizer {
         clearAttributes();
         int position = 0;
         Term term;
-        boolean un_increased = true;
+        boolean unIncreased = true;
         do {
             term = segment.next();
             if (term == null) {
-                break;
+                return false;
+            }
+            if (TextUtility.isBlank(term.word)) {
+                totalOffset += term.length();
+                continue;
             }
             if (configuration.isEnablePorterStemming() && term.nature == Nature.nx) {
                 term.word = stemmer.stem(term.word);
             }
-
-            if ((!this.configuration.isEnableStopDictionary()) || (!CoreStopWordDictionary.shouldRemove(term))) {
+            final Term copyTerm = term;
+            if ((!this.configuration.isEnableStopDictionary()) || (!AccessController.doPrivileged(
+                (PrivilegedAction<Boolean>)() -> CoreStopWordDictionary.shouldRemove(copyTerm)))) {
                 position++;
-                un_increased = false;
+                unIncreased = false;
+            } else {
+                totalOffset += term.length();
             }
         }
-        while (un_increased);
+        while (unIncreased);
 
-        if (term != null) {
-            positionAttr.setPositionIncrement(position);
-            termAtt.setEmpty().append(term.word);
-            offsetAtt.setOffset(correctOffset(totalOffset + term.offset),
-                    correctOffset(totalOffset + term.offset + term.word.length()));
-            typeAtt.setType(term.nature == null ? "null" : term.nature.toString());
-            return true;
-        } else {
-            totalOffset += segment.offset;
-            return false;
-        }
+        positionAttr.setPositionIncrement(position);
+        termAtt.setEmpty().append(term.word);
+        offsetAtt.setOffset(correctOffset(term.offset), correctOffset(term.offset + term.word.length()));
+        typeAtt.setType(term.nature == null ? "null" : term.nature.toString());
+        totalOffset += term.length();
+        return true;
     }
 
     @Override

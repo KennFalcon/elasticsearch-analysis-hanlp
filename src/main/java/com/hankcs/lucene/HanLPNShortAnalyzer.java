@@ -2,13 +2,17 @@ package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.seg.NShort.NShortSegment;
+import com.hankcs.hanlp.seg.Segment;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Tokenizer;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
- * N-最短路径分析器
- *
- * @author Kenn
+ * @project: elasticsearch-analysis-hanlp
+ * @description: N-最短路径分析器
+ * @author: Kenn
+ * @create: 2018-12-14 15:10
  */
 public class HanLPNShortAnalyzer extends Analyzer {
     /**
@@ -25,8 +29,10 @@ public class HanLPNShortAnalyzer extends Analyzer {
         super();
     }
 
+    @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        Tokenizer tokenizer = new HanLPTokenizer(new NShortSegment(), configuration);
-        return new Analyzer.TokenStreamComponents(tokenizer);
+        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(
+            AccessController.doPrivileged((PrivilegedAction<Segment>)() -> new NShortSegment().enableCustomDictionary(
+                false).enablePlaceRecognize(true).enableOrganizationRecognize(true)), configuration));
     }
 }
