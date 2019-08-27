@@ -9,10 +9,7 @@ HanLP Analyzer for ElasticSearch
 此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
 🚩 更新日志：
-1. 适配Elasticsearch 7.2.1和7.3.0版本
-2. 修改offset设置机制，默认所有分词器打开offset设置，自定义分词时需要自行设置enable_offset配置
-
-吐槽一下：Elasticsearch竟然连续两天发布了这两个版本，不知道发生了什么，有知道的大佬告知一下~
+1. 适配Elasticsearch 7.3.1版本
 
 ----------
 
@@ -22,6 +19,7 @@ HanLP Analyzer for ElasticSearch
 | Plugin version | Elastic version |
 | :------------- | :-------------- |
 | master         | 7.x             |
+| 7.3.1          | 7.3.1           |
 | 7.3.0          | 7.3.0           |
 | 7.2.1          | 7.2.1           |
 | 7.2.0          | 7.2.0           |
@@ -60,11 +58,9 @@ HanLP Analyzer for ElasticSearch
 
    a. 下载对应的release安装包，最新release包可从baidu盘下载（链接:https://pan.baidu.com/s/1mFPNJXgiTPzZeqEjH_zifw  密码:i0o7）
    
-   b. 将相关内容解压至*ES_HOME*/plugins/analysis-hanlp
+   b. 执行如下命令安装，其中PATH为插件包绝对路径：
    
-   c. 将config目录下的文件移动至*ES_HOME*/config/analysis-hanlp
-   
-   d. 解压出的data目录为词典目录
+   `./bin/elasticsearch-plugin install file://${PATH}`
    
 方式二
 
