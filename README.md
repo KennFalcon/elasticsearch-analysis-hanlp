@@ -9,7 +9,7 @@ HanLP Analyzer for ElasticSearch
 此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
 🚩 更新日志：
-1. 适配Elasticsearch 7.3.2版本
+1. 适配Elasticsearch 7.4.0、7.4.1版本
 
 ----------
 
@@ -19,6 +19,7 @@ HanLP Analyzer for ElasticSearch
 | Plugin version | Elastic version |
 | :------------- | :-------------- |
 | master         | 7.x             |
+| 7.4.0          | 7.4.0           |
 | 7.3.2          | 7.3.2           |
 | 7.3.1          | 7.3.1           |
 | 7.3.0          | 7.3.0           |
@@ -73,7 +74,7 @@ HanLP Analyzer for ElasticSearch
 
 release包中存放的为HanLP源码中默认的分词数据，若要下载完整版数据包，请查看[HanLP Release](https://github.com/hankcs/HanLP/releases)。
 
-数据包目录：*ES_HOME*/analysis-hanlp
+数据包目录：*ES_HOME*/plugins/analysis-hanlp
 
 **注：因原版数据包自定义词典部分文件名为中文，这里的hanlp.properties中已修改为英文，请对应修改文件名**
 
@@ -85,7 +86,7 @@ release包中存放的为HanLP源码中默认的分词数据，若要下载完�
 
 在本版本中，增加了词典热更新，修改步骤如下：
 
-a. 在*ES_HOME*/analysis-hanlp/data/dictionary/custom目录中新增自定义词典
+a. 在*ES_HOME*/plugins/analysis-hanlp/data/dictionary/custom目录中新增自定义词典
 
 b. 修改hanlp.properties，修改CustomDictionaryPath，增加自定义词典配置
 
