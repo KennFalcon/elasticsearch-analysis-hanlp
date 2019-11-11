@@ -64,7 +64,7 @@ HanLP Analyzer for ElasticSearch
    
    b. 执行如下命令安装，其中PATH为插件包绝对路径：
    
-   `./bin/elasticsearch-plugin install file://${PATH}`
+   `./bin/elasticsearch-plugin install file:///${PATH}`
    
 方式二
 
