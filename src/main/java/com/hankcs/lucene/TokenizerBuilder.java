@@ -1,9 +1,9 @@
 package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
+import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
-import com.hankcs.hanlp.tokenizer.TraditionalChineseTokenizer;
 import org.apache.lucene.analysis.Tokenizer;
 
 import java.security.AccessController;
@@ -52,12 +52,12 @@ public class TokenizerBuilder {
             .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging())
             .enableOffset(configuration.isEnableOffset());
         if (configuration.isEnableTraditionalChineseMode()) {
-            segment.enableIndexMode(false);
-            TraditionalChineseTokenizer.SEGMENT = segment;
             return new Segment() {
                 @Override
                 protected List<Term> segSentence(char[] sentence) {
-                    return TraditionalChineseTokenizer.segment(new String(sentence));
+                    List<Term> terms = segment.seg(HanLP.convertToSimplifiedChinese(new String(sentence)));
+                    terms.stream().forEach(t -> t.word = HanLP.convertToTraditionalChinese(t.word));
+                    return terms;
                 }
             };
         }
