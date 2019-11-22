@@ -55,9 +55,7 @@ public class TokenizerBuilder {
             return new Segment() {
                 @Override
                 protected List<Term> segSentence(char[] sentence) {
-                    List<Term> terms = segment.seg(HanLP.convertToSimplifiedChinese(new String(sentence)));
-                    terms.stream().forEach(t -> t.word = HanLP.convertToTraditionalChinese(t.word));
-                    return terms;
+                    return segment.seg(HanLP.convertToSimplifiedChinese(new String(sentence)));
                 }
             };
         }
