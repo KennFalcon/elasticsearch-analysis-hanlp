@@ -73,6 +73,7 @@ public class HanLPTokenizer extends Tokenizer {
         do {
             term = segment.next();
             if (term == null) {
+                totalOffset += segment.offset;
                 return false;
             }
             if (TextUtility.isBlank(term.word)) {

@@ -42,7 +42,7 @@ public class SegmentWrapper {
     /**
      * term的偏移量，由于wrapper是按行读取的，必须对term.offset做一个校正
      */
-    private int offset;
+    int offset;
 
     Configuration configuration;
 
