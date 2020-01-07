@@ -9,7 +9,8 @@ HanLP Analyzer for ElasticSearch
 此分词器基于[HanLP](http://www.hankcs.com/nlp)，提供了HanLP中大部分的分词方式。
 
 🚩 更新日志：
-1. 适配Elasticsearch 7.5.0版本，修复copy_to引起的offset问题，感谢@seanlei 提出的问题以及修改意见
+1. 适配Elasticsearch 7.5.1版本，更新HanLP版本至1.7.6
+2. 修复文本开头出现换行符导致的高亮错位问题
 
 ----------
 
@@ -19,6 +20,7 @@ HanLP Analyzer for ElasticSearch
 | Plugin version | Elastic version |
 | :------------- | :-------------- |
 | master         | 7.x             |
+| 7.5.1          | 7.5.1           |
 | 7.5.0          | 7.5.0           |
 | 7.4.2          | 7.4.2           |
 | 7.4.1          | 7.4.1           |
