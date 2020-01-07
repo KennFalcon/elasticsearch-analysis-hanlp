@@ -85,9 +85,6 @@ public class SegmentWrapper {
                 return null;
             }
         }
-        if (offset != 0) {
-            offset += 1;
-        }
 
         final String lineNeedSeg = line;
         List<Term> termList = AccessController.doPrivileged((PrivilegedAction<List<Term>>)() -> {
@@ -108,7 +105,11 @@ public class SegmentWrapper {
         for (Term term: termArray) {
             term.offset = term.offset + offset;
         }
-        offset += line.length();
+        if (scanner.hasNextLine()) {
+            offset += line.length() + 1;
+        } else {
+            offset += line.length();
+        }
         index = 0;
         return termArray[index++];
     }
