@@ -2,19 +2,20 @@ package org.elasticsearch.index.analysis;
 
 import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.HanLP;
-import com.hankcs.hanlp.model.crf.CRFLexicalAnalyzer;
 import com.hankcs.hanlp.model.perceptron.PerceptronLexicalAnalyzer;
 import com.hankcs.hanlp.seg.Dijkstra.DijkstraSegment;
 import com.hankcs.hanlp.seg.NShort.NShortSegment;
 import com.hankcs.hanlp.seg.Other.DoubleArrayTrieSegment;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.lucene.TokenizerBuilder;
+import com.hankcs.model.PerceptronCWSInstance;
+import com.hankcs.model.PerceptronNERInstance;
+import com.hankcs.model.PerceptronPOSInstance;
 import org.apache.lucene.analysis.Tokenizer;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 
-import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
@@ -28,11 +29,11 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
     /**
      * 分词类型
      */
-    private HanLPType hanLPType;
+    private final HanLPType hanLPType;
     /**
      * 分词配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HanLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings, HanLPType hanLPType) {
         super(indexSettings, settings, name);
@@ -64,11 +65,6 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.DIJKSTRA);
     }
 
-    @Deprecated
-    public static HanLPTokenizerFactory getHanLPCRFTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.CRF);
-    }
-
     public static HanLPTokenizerFactory getHanLPSpeedTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.SPEED);
     }
@@ -79,45 +75,35 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
             case INDEX:
                 configuration.enableIndexMode(true);
                 return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
-                    HanLP.newSegment().enableIndexMode(true)),
-                    configuration);
+                                HanLP.newSegment().enableIndexMode(true)),
+                        configuration);
             case NLP:
-                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () -> {
-                    try {
-                        return new PerceptronLexicalAnalyzer();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return HanLP.newSegment();
-                }), configuration);
+                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                new PerceptronLexicalAnalyzer(
+                                        PerceptronCWSInstance.getInstance().getLinearModel(),
+                                        PerceptronPOSInstance.getInstance().getLinearModel(),
+                                        PerceptronNERInstance.getInstance().getLinearModel())
+                        ),
+                        configuration);
             case N_SHORT:
                 configuration.enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true);
-                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)() ->
-                        new NShortSegment().enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true)),
-                    configuration);
+                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                new NShortSegment().enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true)),
+                        configuration);
             case DIJKSTRA:
                 configuration.enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true);
-                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)() ->
-                        new DijkstraSegment().enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true)),
-                    configuration);
-            case CRF:
-                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () -> {
-                    try {
-                        return new CRFLexicalAnalyzer();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return HanLP.newSegment();
-                }), configuration);
+                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                new DijkstraSegment().enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true)),
+                        configuration);
             case SPEED:
                 configuration.enableCustomDictionary(false);
-                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)() ->
-                    new DoubleArrayTrieSegment().enableCustomDictionary(false)),
-                    configuration);
+                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                new DoubleArrayTrieSegment().enableCustomDictionary(false)),
+                        configuration);
             case HANLP:
             case STANDARD:
             default:
-                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration);
+                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) HanLP::newSegment), configuration);
         }
     }
 }

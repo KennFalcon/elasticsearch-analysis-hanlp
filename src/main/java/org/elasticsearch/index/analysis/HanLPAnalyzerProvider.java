@@ -39,9 +39,6 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
             case DIJKSTRA:
                 analyzer = new HanLPDijkstraAnalyzer(configuration);
                 break;
-            case CRF:
-                analyzer = new HanLPCRFAnalyzer(configuration);
-                break;
             case SPEED:
                 analyzer = new HanLPSpeedAnalyzer(configuration);
                 break;
@@ -73,11 +70,6 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
 
     public static HanLPAnalyzerProvider getHanLPDijkstraAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.DIJKSTRA);
-    }
-
-    @Deprecated
-    public static HanLPAnalyzerProvider getHanLPCRFAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings) {
-        return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.CRF);
     }
 
     public static HanLPAnalyzerProvider getHanLPSpeedAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings) {
