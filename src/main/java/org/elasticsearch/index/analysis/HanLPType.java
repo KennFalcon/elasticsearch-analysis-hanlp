@@ -32,10 +32,6 @@ public enum HanLPType {
      */
     DIJKSTRA,
     /**
-     * CRF分词
-     */
-    CRF,
-    /**
      * 极速词典分词
      */
     SPEED
