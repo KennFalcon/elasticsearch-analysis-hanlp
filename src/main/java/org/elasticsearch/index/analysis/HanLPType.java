@@ -1,10 +1,10 @@
 package org.elasticsearch.index.analysis;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: Hanlp分词类型
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: Hanlp分词类型
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public enum HanLPType {
     /**

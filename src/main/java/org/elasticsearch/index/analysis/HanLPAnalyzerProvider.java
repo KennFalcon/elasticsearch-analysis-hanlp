@@ -8,10 +8,10 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: Hanlp analyzer provider
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: Hanlp analyzer provider
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyzer> {
 

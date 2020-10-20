@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 远程词典配置
- * @author: Kenn
- * @create: 2018-12-18 15:23
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 远程词典配置
+ * Author: Kenn
+ * Create: 2018-12-18 15:23
  */
 public class RemoteDictConfig {
 

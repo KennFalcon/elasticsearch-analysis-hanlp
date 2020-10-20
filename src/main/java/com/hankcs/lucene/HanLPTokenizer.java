@@ -36,15 +36,15 @@ public class HanLPTokenizer extends Tokenizer {
     /**
      * 词性
      */
-    private TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
+    private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
     /**
      * 配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
     /**
      * 分词器
      */
-    private SegmentWrapper segment;
+    private final SegmentWrapper segment;
     /**
      *
      */

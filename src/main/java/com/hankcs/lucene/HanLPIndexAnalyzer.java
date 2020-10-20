@@ -9,10 +9,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 索引分析器
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 索引分析器
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class HanLPIndexAnalyzer extends Analyzer {
     /**

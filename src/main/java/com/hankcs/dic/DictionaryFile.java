@@ -7,10 +7,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 自定义词典文件信息
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 自定义词典文件信息
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class DictionaryFile {
 

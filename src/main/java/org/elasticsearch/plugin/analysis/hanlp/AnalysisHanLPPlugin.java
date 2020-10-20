@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: Hanlp分词插件
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: Hanlp分词插件
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class AnalysisHanLPPlugin extends Plugin implements AnalysisPlugin {
 

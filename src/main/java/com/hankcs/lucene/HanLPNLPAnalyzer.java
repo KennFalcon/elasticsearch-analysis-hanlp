@@ -12,10 +12,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: NLP分析器
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: NLP分析器
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class HanLPNLPAnalyzer extends Analyzer {
 

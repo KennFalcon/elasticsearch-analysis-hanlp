@@ -15,17 +15,17 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 对原停用词过滤做了修改，删除了对词性过滤，只对停用词词典中词进行过滤
- * @author: Hankcs
- * @editer: Kenn
- * @create: 2019-03-18 19:16
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 对原停用词过滤做了修改，删除了对词性过滤，只对停用词词典中词进行过滤
+ * Author: Hankcs
+ * Editor Kenn
+ * Create: 2019-03-18 19:16
  */
 public class CoreStopWordDictionary {
 
-    private static StopWordDictionary dictionary;
+    private static final StopWordDictionary dictionary;
 
-    private static Filter FILTER = term -> {
+    private static final Filter FILTER = term -> {
         // 除掉停用词
         String nature = term.nature != null ? term.nature.toString() : "空";
         char firstChar = nature.charAt(0);
@@ -60,14 +60,7 @@ public class CoreStopWordDictionary {
     }
 
     public static void apply(List<Term> termList) {
-        ListIterator listIterator = termList.listIterator();
-
-        while (listIterator.hasNext()) {
-            if (shouldRemove((Term)listIterator.next())) {
-                listIterator.remove();
-            }
-        }
-
+        termList.removeIf(CoreStopWordDictionary::shouldRemove);
     }
 
     static {

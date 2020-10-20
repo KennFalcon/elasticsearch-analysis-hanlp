@@ -29,10 +29,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 自定义远程词典监控线程
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 自定义远程词典监控线程
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class RemoteMonitor implements Runnable {
 
@@ -274,7 +274,7 @@ public class RemoteMonitor implements Runnable {
      * 解析默认信息
      *
      * @param location 配置路径
-     * @return 返回new Tuple<路径, 默认词性>
+     * @return 返回{路径, 默认词性}
      */
     private Tuple<String, Nature> analysisDefaultInfo(String location) {
         Nature defaultNature = Nature.n;

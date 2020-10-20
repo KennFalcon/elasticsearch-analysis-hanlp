@@ -16,13 +16,14 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 自定义词典监控线程
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 自定义词典监控线程
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class ExtMonitor implements Runnable {
 
@@ -36,6 +37,7 @@ public class ExtMonitor implements Runnable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void run() {
         List<DictionaryFile> originalDictionaryFileList = DictionaryFileCache.getCustomDictionaryFileList();
         logger.debug("hanlp original custom dictionary: {}", Arrays.toString(originalDictionaryFileList.toArray()));
@@ -64,6 +66,7 @@ public class ExtMonitor implements Runnable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void reloadProperty() {
         Properties p = new Properties();
         try {
@@ -71,7 +74,7 @@ public class ExtMonitor implements Runnable {
             if (loader == null) {
                 loader = HanLP.Config.class.getClassLoader();
             }
-            p.load(new InputStreamReader(Predefine.HANLP_PROPERTIES_PATH == null ? loader.getResourceAsStream("hanlp.properties") : new FileInputStream(Predefine.HANLP_PROPERTIES_PATH), "UTF-8"));
+            p.load(new InputStreamReader(Predefine.HANLP_PROPERTIES_PATH == null ? Objects.requireNonNull(loader.getResourceAsStream("hanlp.properties")) : new FileInputStream(Predefine.HANLP_PROPERTIES_PATH), "UTF-8"));
             String root = p.getProperty("root", "").replaceAll("\\\\", "/");
             if (root.length() > 0 && !root.endsWith("/")) {
                 root += "/";
@@ -95,6 +98,7 @@ public class ExtMonitor implements Runnable {
         }
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private List<DictionaryFile> getCurrentDictionaryFileList(String[] customDictionaryPaths) {
         List<DictionaryFile> dictionaryFileList = new ArrayList<>();
         for (String customDictionaryPath : customDictionaryPaths) {

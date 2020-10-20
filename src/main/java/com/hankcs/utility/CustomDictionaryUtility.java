@@ -14,16 +14,17 @@ import com.hankcs.help.ESPluginLoggerFactory;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 自定义分词工具类
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 自定义分词工具类
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class CustomDictionaryUtility {
 
@@ -77,8 +78,7 @@ public class CustomDictionaryUtility {
             logger.debug("hanlp converting custom dictionary cache to dat file");
             // 缓存值文件
             logger.debug("hanlp traversing custom dictionary words");
-            List<CoreDictionary.Attribute> attributeList = new LinkedList<>();
-            attributeList.addAll(map.values());
+            List<CoreDictionary.Attribute> attributeList = new LinkedList<>(map.values());
             logger.debug("hanlp traverse custom dictionary successfully");
             DataOutputStream out = new DataOutputStream(IOUtil.newOutputStream(mainPath + Predefine.BIN_EXT));
             // 缓存用户词性
@@ -110,7 +110,7 @@ public class CustomDictionaryUtility {
      * @param path                  词典路径
      * @param defaultNature         默认词性
      * @param customNatureCollector 收集用户词性
-     * @return
+     * @return 成功返回true，失败返回false
      */
     private static boolean load(String path, Nature defaultNature, TreeMap<String, CoreDictionary.Attribute> map, LinkedHashSet<Nature> customNatureCollector) {
         try {
@@ -118,7 +118,7 @@ public class CustomDictionaryUtility {
             if (path.endsWith(".csv")) {
                 splitter = ",";
             }
-            BufferedReader br = new BufferedReader(new InputStreamReader(IOUtil.newInputStream(path), "UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(IOUtil.newInputStream(path), StandardCharsets.UTF_8));
             String line;
             boolean firstLine = true;
             while ((line = br.readLine()) != null) {

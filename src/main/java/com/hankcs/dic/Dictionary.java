@@ -14,10 +14,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 词典类
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 词典类
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class Dictionary {
     /**
@@ -35,7 +35,7 @@ public class Dictionary {
 
     private static final Logger logger = ESPluginLoggerFactory.getLogger(Dictionary.class.getName());
 
-    private static ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
+    private static final ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
 
     private Dictionary(Configuration configuration) {
         Path configDir = configuration.getEnvironment().configFile().resolve(AnalysisHanLPPlugin.PLUGIN_NAME);
@@ -46,7 +46,7 @@ public class Dictionary {
         RemoteDictConfig.initial(configDir.resolve(REMOTE_CONFIG_FILE_NAME).toString());
     }
 
-    public static synchronized Dictionary initial(Configuration configuration) {
+    public static synchronized void initial(Configuration configuration) {
         if (singleton == null) {
             synchronized (Dictionary.class) {
                 if (singleton == null) {
@@ -61,10 +61,8 @@ public class Dictionary {
                             pool.scheduleAtFixedRate(new RemoteMonitor(location, "stop"), 10, 60, TimeUnit.SECONDS);
                         }
                     }
-                    return singleton;
                 }
             }
         }
-        return singleton;
     }
 }

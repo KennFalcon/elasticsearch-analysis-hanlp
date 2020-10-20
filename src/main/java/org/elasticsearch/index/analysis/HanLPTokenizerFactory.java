@@ -20,10 +20,10 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: Hanlp tokenizer factory
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: Hanlp tokenizer factory
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
     /**

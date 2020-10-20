@@ -5,10 +5,10 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: Hanlp分词插件
- * @author: Kenn
- * @create: 2019-02-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 日志
+ * Author: Kenn
+ * Create: 2019-02-14 15:10
  */
 public class ESPluginLoggerFactory {
 
@@ -28,6 +28,6 @@ public class ESPluginLoggerFactory {
     }
 
     static public Logger getLogger(String prefix, Logger logger) {
-        return (Logger)(prefix != null && prefix.length() != 0 ? new PrefixPluginLogger((ExtendedLogger)logger, logger.getName(), prefix) : logger);
+        return prefix != null && prefix.length() != 0 ? new PrefixPluginLogger((ExtendedLogger)logger, logger.getName(), prefix) : logger;
     }
 }

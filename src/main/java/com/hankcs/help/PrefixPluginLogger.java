@@ -10,10 +10,10 @@ import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
 import java.util.WeakHashMap;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: Hanlp分词插件
- * @author: Kenn
- * @create: 2019-02-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 日志
+ * Author: Kenn
+ * Create: 2019-02-14 15:10
  */
 public class PrefixPluginLogger extends ExtendedLoggerWrapper {
 

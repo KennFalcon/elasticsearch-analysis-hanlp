@@ -6,9 +6,10 @@ import com.hankcs.hanlp.model.perceptron.model.LinearModel;
 import java.io.IOException;
 
 /**
- * Created on 2020/10/09
- *
- * @author Kenn
+ * Project: elasticsearch-analysis-hanlp
+ * Description:
+ * Author: Kenn
+ * Create: 2020-10-09 09:47
  */
 public class PerceptronNERInstance {
 
