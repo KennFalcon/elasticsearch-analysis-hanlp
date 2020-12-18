@@ -8,6 +8,7 @@ import com.hankcs.hanlp.dictionary.other.CharTable;
 import com.hankcs.hanlp.dictionary.stopword.CoreStopWordDictionary;
 import com.hankcs.hanlp.utility.LexiconUtility;
 import com.hankcs.help.ESPluginLoggerFactory;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -38,11 +39,11 @@ public class RemoteMonitor implements Runnable {
 
     private static final Logger logger = ESPluginLoggerFactory.getLogger(RemoteMonitor.class.getName());
 
-    private static CloseableHttpClient httpclient = HttpClients.createDefault();
+    private static final CloseableHttpClient httpclient = HttpClients.createDefault();
     /**
      * 上次更改时间
      */
-    private String last_modified;
+    private String lastModified;
     /**
      * 资源属性
      */
@@ -61,8 +62,8 @@ public class RemoteMonitor implements Runnable {
     public RemoteMonitor(String location, String type) {
         this.location = location;
         this.type = type;
-        this.last_modified = null;
-        this.eTags = null;
+        this.lastModified = "";
+        this.eTags = "";
     }
 
     @Override
@@ -90,38 +91,34 @@ public class RemoteMonitor implements Runnable {
         head.setConfig(buildRequestConfig());
 
         // 设置请求头
-        if (last_modified != null) {
-            head.setHeader("If-Modified-Since", last_modified);
+        if (!lastModified.isEmpty()) {
+            head.setHeader(HttpHeaders.IF_MODIFIED_SINCE, lastModified);
         }
-        if (eTags != null) {
-            head.setHeader("If-None-Match", eTags);
+        if (!eTags.isEmpty()) {
+            head.setHeader(HttpHeaders.IF_NONE_MATCH, eTags);
         }
 
-        CloseableHttpResponse response = null;
-        try {
-            response = httpclient.execute(head);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                if ((response.getLastHeader("Last-Modified") != null) && !response.getLastHeader("Last-Modified").getValue().equalsIgnoreCase(last_modified)) {
+        try (
+                CloseableHttpResponse response = httpclient.execute(head)
+        ) {
+            final int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpStatus.SC_OK) {
+                if ((response.getLastHeader(HttpHeaders.LAST_MODIFIED) != null)
+                        && !lastModified.equalsIgnoreCase(response.getLastHeader(HttpHeaders.LAST_MODIFIED).getValue())) {
                     loadRemoteCustomWords(response);
-                } else if ((response.getLastHeader("ETag") != null) && !response.getLastHeader("ETag").getValue().equalsIgnoreCase(eTags)) {
+                } else if ((response.getLastHeader(HttpHeaders.ETAG) != null)
+                        && !eTags.equalsIgnoreCase(response.getLastHeader(HttpHeaders.ETAG).getValue())) {
                     loadRemoteCustomWords(response);
                 }
-            } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_MODIFIED) {
+            } else if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
                 logger.info("remote_ext_dict {} is without modified", location);
             } else {
-                logger.info("remote_ext_dict {} return bad code {}", location, response.getStatusLine().getStatusCode());
+                logger.info("remote_ext_dict {} return bad code {}",
+                        location, response.getStatusLine().getStatusCode());
             }
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("remote_ext_dict {} error!", e, location);
-        } finally {
-            try {
-                if (response != null) {
-                    response.close();
-                }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+            logger.error("remote_ext_dict {} error: {}", location, e.getMessage());
         }
     }
 
@@ -145,8 +142,9 @@ public class RemoteMonitor implements Runnable {
             default:
                 return;
         }
-        last_modified = response.getLastHeader("Last-Modified") == null ? null : response.getLastHeader("Last-Modified").getValue();
-        eTags = response.getLastHeader("ETag") == null ? null : response.getLastHeader("ETag").getValue();
+        lastModified = response.getLastHeader(HttpHeaders.LAST_MODIFIED) == null ?
+                "" : response.getLastHeader(HttpHeaders.LAST_MODIFIED).getValue();
+        eTags = response.getLastHeader(HttpHeaders.ETAG) == null ? "" : response.getLastHeader(HttpHeaders.ETAG).getValue();
     }
 
     /**
@@ -163,44 +161,42 @@ public class RemoteMonitor implements Runnable {
         get.setConfig(buildRequestConfig());
         try {
             response = httpclient.execute(get);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                in = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), analysisDefaultCharset(response)));
-                String line;
-                boolean firstLine = true;
-                while ((line = in.readLine()) != null) {
-                    if (firstLine) {
-                        line = IOUtil.removeUTF8BOM(line);
-                        firstLine = false;
-                    }
-
-                    // 切分
-                    String[] param = line.split(SPLITTER);
-                    String word = param[0];
-
-                    // 排除空行
-                    if (word.length() == 0) {
-                        continue;
-                    }
-
-                    // 正规化
-                    if (HanLP.Config.Normalization) {
-                        word = CharTable.convert(word);
-                    }
-                    logger.debug("hanlp remote custom word: {}", word);
-                    CustomDictionary.insert(word, analysisNatureWithFrequency(defaultInfo.v2(), param));
-                }
-                in.close();
-                response.close();
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                return;
             }
-            response.close();
+
+            in = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), analysisDefaultCharset(response)));
+            String line;
+            boolean firstLine = true;
+            while ((line = in.readLine()) != null) {
+                if (firstLine) {
+                    line = IOUtil.removeUTF8BOM(line);
+                    firstLine = false;
+                }
+
+                // 切分
+                String[] param = line.split(SPLITTER);
+                String word = param[0];
+
+                // 排除空行
+                if (word.length() == 0) {
+                    continue;
+                }
+
+                // 正规化
+                if (HanLP.Config.Normalization) {
+                    word = CharTable.convert(word);
+                }
+                logger.debug("hanlp remote custom word: {}", word);
+                CustomDictionary.insert(word, analysisNatureWithFrequency(defaultInfo.v2(), param));
+            }
         } catch (IllegalStateException | IOException e) {
-            logger.error("get remote words {} error", e, location);
+            logger.error("get remote words {} error: {}", location, e.getMessage());
         } finally {
             try {
-                IOUtils.close(in);
-                IOUtils.close(response);
+                IOUtils.close(in, response);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Closing remote words resource error.", e);
             }
         }
     }
@@ -218,30 +214,28 @@ public class RemoteMonitor implements Runnable {
         get.setConfig(buildRequestConfig());
         try {
             response = httpclient.execute(get);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                in = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), analysisDefaultCharset(response)));
-                String line;
-                boolean firstLine = true;
-                while ((line = in.readLine()) != null) {
-                    if (firstLine) {
-                        line = IOUtil.removeUTF8BOM(line);
-                        firstLine = false;
-                    }
-                    logger.debug("hanlp remote stop word: {}", line);
-                    CoreStopWordDictionary.add(line);
-                }
-                in.close();
-                response.close();
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                return;
             }
-            response.close();
+
+            in = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), analysisDefaultCharset(response)));
+            String line;
+            boolean firstLine = true;
+            while ((line = in.readLine()) != null) {
+                if (firstLine) {
+                    line = IOUtil.removeUTF8BOM(line);
+                    firstLine = false;
+                }
+                logger.debug("hanlp remote stop word: {}", line);
+                CoreStopWordDictionary.add(line);
+            }
         } catch (IllegalStateException | IOException e) {
-            logger.error("get remote words {} error", e, location);
+            logger.error("get remote words {} error: {}", location, e.getMessage());
         } finally {
             try {
-                IOUtils.close(in);
-                IOUtils.close(response);
+                IOUtils.close(in, response);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Closing remote stop words resource error.", e);
             }
         }
     }

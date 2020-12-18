@@ -35,37 +35,45 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
      */
     private final Configuration configuration;
 
-    public HanLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings, HanLPType hanLPType) {
+    public HanLPTokenizerFactory(
+            IndexSettings indexSettings, Environment env, String name, Settings settings, HanLPType hanLPType) {
         super(indexSettings, settings, name);
         this.hanLPType = hanLPType;
         this.configuration = new Configuration(env, settings);
     }
 
-    public static HanLPTokenizerFactory getHanLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+    public static HanLPTokenizerFactory getHanLPTokenizerFactory(
+            IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.HANLP);
     }
 
-    public static HanLPTokenizerFactory getHanLPStandardTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+    public static HanLPTokenizerFactory getHanLPStandardTokenizerFactory(
+            IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.STANDARD);
     }
 
-    public static HanLPTokenizerFactory getHanLPIndexTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+    public static HanLPTokenizerFactory getHanLPIndexTokenizerFactory(
+            IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.INDEX);
     }
 
-    public static HanLPTokenizerFactory getHanLPNLPTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+    public static HanLPTokenizerFactory getHanLPNLPTokenizerFactory(
+            IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.NLP);
     }
 
-    public static HanLPTokenizerFactory getHanLPNShortTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+    public static HanLPTokenizerFactory getHanLPNShortTokenizerFactory(
+            IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.N_SHORT);
     }
 
-    public static HanLPTokenizerFactory getHanLPDijkstraTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+    public static HanLPTokenizerFactory getHanLPDijkstraTokenizerFactory(
+            IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.DIJKSTRA);
     }
 
-    public static HanLPTokenizerFactory getHanLPSpeedTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+    public static HanLPTokenizerFactory getHanLPSpeedTokenizerFactory(
+            IndexSettings indexSettings, Environment env, String name, Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.SPEED);
     }
 
@@ -80,20 +88,26 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
             case NLP:
                 return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
                                 new PerceptronLexicalAnalyzer(
-                                        PerceptronCWSInstance.getInstance().getLinearModel(),
-                                        PerceptronPOSInstance.getInstance().getLinearModel(),
-                                        PerceptronNERInstance.getInstance().getLinearModel())
+                                  PerceptronCWSInstance.getInstance().getLinearModel(),
+                                  PerceptronPOSInstance.getInstance().getLinearModel(),
+                                  PerceptronNERInstance.getInstance().getLinearModel())
                         ),
                         configuration);
             case N_SHORT:
                 configuration.enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true);
                 return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
-                                new NShortSegment().enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true)),
+                                new NShortSegment()
+                                        .enableCustomDictionary(false)
+                                        .enablePlaceRecognize(true)
+                                        .enableOrganizationRecognize(true)),
                         configuration);
             case DIJKSTRA:
                 configuration.enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true);
                 return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
-                                new DijkstraSegment().enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true)),
+                                new DijkstraSegment()
+                                        .enableCustomDictionary(false)
+                                        .enablePlaceRecognize(true)
+                                        .enableOrganizationRecognize(true)),
                         configuration);
             case SPEED:
                 configuration.enableCustomDictionary(false);
@@ -103,7 +117,8 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
             case HANLP:
             case STANDARD:
             default:
-                return TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>) HanLP::newSegment), configuration);
+                return TokenizerBuilder.tokenizer(
+                        AccessController.doPrivileged((PrivilegedAction<Segment>) HanLP::newSegment), configuration);
         }
     }
 }

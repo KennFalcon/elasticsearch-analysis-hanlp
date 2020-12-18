@@ -13,7 +13,11 @@ import com.hankcs.hanlp.utility.TextUtility;
 import com.hankcs.help.ESPluginLoggerFactory;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -31,7 +35,7 @@ public class CustomDictionaryUtility {
     private static final Logger logger = ESPluginLoggerFactory.getLogger(CustomDictionaryUtility.class.getName());
 
     public static boolean reload() {
-        CustomDictionary.dat.getSize();
+        // CustomDictionary.dat.getSize();
         String[] paths = HanLP.Config.CustomDictionaryPath;
         if (paths == null || paths.length == 0) {
             return false;
@@ -46,41 +50,43 @@ public class CustomDictionaryUtility {
         CustomDictionary.dat = new DoubleArrayTrie<>();
         TreeMap<String, CoreDictionary.Attribute> map = new TreeMap<>();
         LinkedHashSet<Nature> customNatureCollector = new LinkedHashSet<>();
-        try {
-            String[] paths = HanLP.Config.CustomDictionaryPath;
-            for (String path : paths) {
-                Nature defaultNature = Nature.n;
-                int cut = path.indexOf(' ');
-                if (cut > 0) {
-                    // 有默认词性
-                    String nature = path.substring(cut + 1);
-                    path = path.substring(0, cut);
-                    try {
-                        defaultNature = LexiconUtility.convertStringToNature(nature, customNatureCollector);
-                    } catch (Exception e) {
-                        logger.error("hanlp config file [{}] write error", path, e);
-                        continue;
-                    }
-                }
-                logger.debug("hanlp begin reload custom dictionary: {}, default nature: {}", path, defaultNature);
-                if (!load(path, defaultNature, map, customNatureCollector)) {
-                    logger.warn("hanlp reload error, custom dictionary: {}", path);
+
+        String[] paths = HanLP.Config.CustomDictionaryPath;
+        for (String path : paths) {
+            Nature defaultNature = Nature.n;
+            int cut = path.indexOf(' ');
+            if (cut > 0) {
+                // 有默认词性
+                String nature = path.substring(cut + 1);
+                path = path.substring(0, cut);
+                try {
+                    defaultNature = LexiconUtility.convertStringToNature(nature, customNatureCollector);
+                } catch (Exception e) {
+                    logger.error("cannot read custom dictionary [{}] as [{}]: {}", path, nature, e.getMessage());
+                    continue;
                 }
             }
-            if (map.size() == 0) {
-                logger.warn("hanlp does not reload any words");
-                // 当作空白占位符
-                map.put(Predefine.TAG_OTHER, null);
+            logger.debug("hanlp begin reload custom dictionary: {}, default nature: {}", path, defaultNature);
+            if (!load(path, defaultNature, map, customNatureCollector)) {
+                logger.warn("hanlp reload error, custom dictionary: {}", path);
             }
-            logger.debug("hanlp begin build double array trie");
-            CustomDictionary.dat.build(map);
-            // 缓存成dat文件，下次加载会快很多
-            logger.debug("hanlp converting custom dictionary cache to dat file");
-            // 缓存值文件
-            logger.debug("hanlp traversing custom dictionary words");
-            List<CoreDictionary.Attribute> attributeList = new LinkedList<>(map.values());
-            logger.debug("hanlp traverse custom dictionary successfully");
-            DataOutputStream out = new DataOutputStream(IOUtil.newOutputStream(mainPath + Predefine.BIN_EXT));
+        }
+        if (map.size() == 0) {
+            logger.warn("hanlp does not reload any words");
+            // 当作空白占位符
+            map.put(Predefine.TAG_OTHER, null);
+        }
+        logger.debug("hanlp begin build double array trie");
+        CustomDictionary.dat.build(map);
+        // 缓存成dat文件，下次加载会快很多
+        logger.debug("hanlp converting custom dictionary cache to dat file");
+        // 缓存值文件
+        logger.debug("hanlp traversing custom dictionary words");
+        List<CoreDictionary.Attribute> attributeList = new LinkedList<>(map.values());
+        logger.debug("hanlp traverse custom dictionary successfully");
+        try (
+                DataOutputStream out = new DataOutputStream(IOUtil.newOutputStream(mainPath + Predefine.BIN_EXT));
+        ) {
             // 缓存用户词性
             IOUtil.writeCustomNature(out, customNatureCollector);
             // 缓存正文
@@ -91,12 +97,11 @@ public class CustomDictionaryUtility {
             }
             logger.debug("hanlp traverse custom words to write into file successfully");
             CustomDictionary.dat.save(out);
-            out.close();
         } catch (FileNotFoundException e) {
-            logger.error("hanlp custom dictionary main path [{}] is not exist", mainPath, e);
+            logger.error("hanlp custom dictionary main path [{}] is not exist", mainPath);
             return false;
         } catch (IOException e) {
-            logger.error("hanlp custom dictionary main path [{}] read failed", mainPath, e);
+            logger.error("hanlp custom dictionary main path [{}] read failed", mainPath);
             return false;
         } catch (Exception e) {
             logger.warn("hanlp custom dictionary cache failed, main path: {}, error: {}", mainPath, TextUtility.exceptionToString(e));
@@ -112,13 +117,15 @@ public class CustomDictionaryUtility {
      * @param customNatureCollector 收集用户词性
      * @return 成功返回true，失败返回false
      */
-    private static boolean load(String path, Nature defaultNature, TreeMap<String, CoreDictionary.Attribute> map, LinkedHashSet<Nature> customNatureCollector) {
-        try {
+    private static boolean load(String path, Nature defaultNature, TreeMap<String, CoreDictionary.Attribute> map,
+                                LinkedHashSet<Nature> customNatureCollector) {
+        try (
+                BufferedReader br = new BufferedReader(new InputStreamReader(IOUtil.newInputStream(path), StandardCharsets.UTF_8));
+        ) {
             String splitter = "\\s";
             if (path.endsWith(".csv")) {
                 splitter = ",";
             }
-            BufferedReader br = new BufferedReader(new InputStreamReader(IOUtil.newInputStream(path), StandardCharsets.UTF_8));
             String line;
             boolean firstLine = true;
             while ((line = br.readLine()) != null) {
@@ -149,9 +156,8 @@ public class CustomDictionaryUtility {
                 }
                 map.put(param[0], attribute);
             }
-            br.close();
         } catch (Exception e) {
-            logger.error("hanlp custom dictionary [{}] read failed!", path, e);
+            logger.error("hanlp custom dictionary [{}] read failed: {}", path, e.getMessage());
             return false;
         }
         return true;
