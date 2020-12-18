@@ -46,7 +46,7 @@ public class HanLPTokenizer extends Tokenizer {
      */
     private final SegmentWrapper segment;
     /**
-     *
+     * stemmer
      */
     private final PorterStemmer stemmer = new PorterStemmer();
 
@@ -65,7 +65,7 @@ public class HanLPTokenizer extends Tokenizer {
     }
 
     @Override
-    final public boolean incrementToken() throws IOException {
+    public final boolean incrementToken() throws IOException {
         clearAttributes();
         int position = 0;
         Term term;
@@ -85,7 +85,7 @@ public class HanLPTokenizer extends Tokenizer {
             }
             final Term copyTerm = term;
             if ((!this.configuration.isEnableStopDictionary()) || (!AccessController.doPrivileged(
-                (PrivilegedAction<Boolean>)() -> CoreStopWordDictionary.shouldRemove(copyTerm)))) {
+                    (PrivilegedAction<Boolean>) () -> CoreStopWordDictionary.shouldRemove(copyTerm)))) {
                 position++;
                 unIncreased = false;
             } else {

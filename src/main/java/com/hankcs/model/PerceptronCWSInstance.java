@@ -14,7 +14,7 @@ import java.io.IOException;
 public class PerceptronCWSInstance {
 
     //使用volatile关键字保其可见性
-    volatile private static PerceptronCWSInstance instance = null;
+    private static volatile PerceptronCWSInstance instance = null;
 
     public static PerceptronCWSInstance getInstance() {
         if (instance == null) {
