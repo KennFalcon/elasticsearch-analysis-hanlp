@@ -14,7 +14,7 @@ import java.io.IOException;
 public class PerceptronNERInstance {
 
     //使用volatile关键字保其可见性
-    volatile private static PerceptronNERInstance instance = null;
+    private static volatile PerceptronNERInstance instance = null;
 
     public static PerceptronNERInstance getInstance() {
         if(instance == null){

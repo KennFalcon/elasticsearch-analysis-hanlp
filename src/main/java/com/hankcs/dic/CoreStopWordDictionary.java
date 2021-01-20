@@ -12,7 +12,6 @@ import com.hankcs.hanlp.utility.TextUtility;
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Project: elasticsearch-analysis-hanlp
@@ -51,12 +50,12 @@ public class CoreStopWordDictionary {
         return !shouldInclude(term);
     }
 
-    public static boolean add(String stopWord) {
-        return dictionary.add(stopWord);
+    public static void add(String stopWord) {
+        dictionary.add(stopWord);
     }
 
-    public static boolean remove(String stopWord) {
-        return dictionary.remove(stopWord);
+    public static void remove(String stopWord) {
+        dictionary.remove(stopWord);
     }
 
     public static void apply(List<Term> termList) {
@@ -69,12 +68,12 @@ public class CoreStopWordDictionary {
             try {
                 dictionary = new StopWordDictionary(Config.CoreStopWordDictionaryPath);
                 DataOutputStream out = new DataOutputStream(
-                    new BufferedOutputStream(IOUtil.newOutputStream(Config.CoreStopWordDictionaryPath + ".bin")));
+                        new BufferedOutputStream(IOUtil.newOutputStream(Config.CoreStopWordDictionaryPath + ".bin")));
                 dictionary.save(out);
                 out.close();
             } catch (Exception var2) {
                 Predefine.logger.severe(
-                    "载入停用词词典" + Config.CoreStopWordDictionaryPath + "失败" + TextUtility.exceptionToString(var2));
+                        "载入停用词词典" + Config.CoreStopWordDictionaryPath + "失败" + TextUtility.exceptionToString(var2));
                 throw new RuntimeException("载入停用词词典" + Config.CoreStopWordDictionaryPath + "失败");
             }
         } else {

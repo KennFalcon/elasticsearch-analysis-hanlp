@@ -5,9 +5,8 @@ import com.hankcs.hanlp.corpus.io.IOUtil;
 import com.hankcs.hanlp.corpus.tag.Nature;
 import com.hankcs.hanlp.dictionary.CustomDictionary;
 import com.hankcs.hanlp.dictionary.other.CharTable;
-import com.hankcs.hanlp.dictionary.stopword.CoreStopWordDictionary;
 import com.hankcs.hanlp.utility.LexiconUtility;
-import com.hankcs.help.ESPluginLoggerFactory;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -15,7 +14,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.elasticsearch.SpecialPermission;
 import org.elasticsearch.common.collect.Tuple;
 import org.elasticsearch.core.internal.io.IOUtils;
@@ -36,13 +37,13 @@ import java.security.PrivilegedAction;
  */
 public class RemoteMonitor implements Runnable {
 
-    private static final Logger logger = ESPluginLoggerFactory.getLogger(RemoteMonitor.class.getName());
+    private static final Logger logger = LogManager.getLogger(RemoteMonitor.class);
 
-    private static CloseableHttpClient httpclient = HttpClients.createDefault();
+    private static final CloseableHttpClient httpclient = HttpClients.createDefault();
     /**
      * 上次更改时间
      */
-    private String last_modified;
+    private String lastModified;
     /**
      * 资源属性
      */
@@ -50,18 +51,18 @@ public class RemoteMonitor implements Runnable {
     /**
      * 请求地址
      */
-    private String location;
+    private final String location;
     /**
      * 数据类型
      */
-    private String type;
+    private final String type;
 
     private static final String SPLITTER = "\\s";
 
     public RemoteMonitor(String location, String type) {
         this.location = location;
         this.type = type;
-        this.last_modified = null;
+        this.lastModified = null;
         this.eTags = null;
     }
 
@@ -90,20 +91,22 @@ public class RemoteMonitor implements Runnable {
         head.setConfig(buildRequestConfig());
 
         // 设置请求头
-        if (last_modified != null) {
-            head.setHeader("If-Modified-Since", last_modified);
+        if (lastModified != null) {
+            head.setHeader(HttpHeaders.IF_MODIFIED_SINCE, lastModified);
         }
         if (eTags != null) {
-            head.setHeader("If-None-Match", eTags);
+            head.setHeader(HttpHeaders.IF_NONE_MATCH, eTags);
         }
 
         CloseableHttpResponse response = null;
         try {
             response = httpclient.execute(head);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                if ((response.getLastHeader("Last-Modified") != null) && !response.getLastHeader("Last-Modified").getValue().equalsIgnoreCase(last_modified)) {
+                if ((response.getLastHeader(HttpHeaders.LAST_MODIFIED) != null)
+                        && !response.getLastHeader(HttpHeaders.LAST_MODIFIED).getValue().equalsIgnoreCase(lastModified)) {
                     loadRemoteCustomWords(response);
-                } else if ((response.getLastHeader("ETag") != null) && !response.getLastHeader("ETag").getValue().equalsIgnoreCase(eTags)) {
+                } else if ((response.getLastHeader(HttpHeaders.ETAG) != null)
+                        && !response.getLastHeader(HttpHeaders.ETAG).getValue().equalsIgnoreCase(eTags)) {
                     loadRemoteCustomWords(response);
                 }
             } else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_MODIFIED) {
@@ -112,16 +115,9 @@ public class RemoteMonitor implements Runnable {
                 logger.info("remote_ext_dict {} return bad code {}", location, response.getStatusLine().getStatusCode());
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("remote_ext_dict {} error!", e, location);
+            logger.error(() -> new ParameterizedMessage("remote_ext_dict load from [{}] error", location), e);
         } finally {
-            try {
-                if (response != null) {
-                    response.close();
-                }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+            IOUtils.closeWhileHandlingException(response);
         }
     }
 
@@ -145,8 +141,10 @@ public class RemoteMonitor implements Runnable {
             default:
                 return;
         }
-        last_modified = response.getLastHeader("Last-Modified") == null ? null : response.getLastHeader("Last-Modified").getValue();
-        eTags = response.getLastHeader("ETag") == null ? null : response.getLastHeader("ETag").getValue();
+        lastModified = response.getLastHeader(HttpHeaders.LAST_MODIFIED) == null
+                ? null
+                : response.getLastHeader(HttpHeaders.LAST_MODIFIED).getValue();
+        eTags = response.getLastHeader(HttpHeaders.ETAG) == null ? null : response.getLastHeader(HttpHeaders.ETAG).getValue();
     }
 
     /**
@@ -194,14 +192,9 @@ public class RemoteMonitor implements Runnable {
             }
             response.close();
         } catch (IllegalStateException | IOException e) {
-            logger.error("get remote words {} error", e, location);
+            logger.error(() -> new ParameterizedMessage("get remote words from [{}] error", location), e);
         } finally {
-            try {
-                IOUtils.close(in);
-                IOUtils.close(response);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeWhileHandlingException(in, response);
         }
     }
 
@@ -235,14 +228,9 @@ public class RemoteMonitor implements Runnable {
             }
             response.close();
         } catch (IllegalStateException | IOException e) {
-            logger.error("get remote words {} error", e, location);
+            logger.error(() -> new ParameterizedMessage("get remote words from [{}] error", location), e);
         } finally {
-            try {
-                IOUtils.close(in);
-                IOUtils.close(response);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeWhileHandlingException(in, response);
         }
     }
 

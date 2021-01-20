@@ -4,14 +4,16 @@ import com.hankcs.cfg.Configuration;
 import com.hankcs.dic.cache.DictionaryFileCache;
 import com.hankcs.dic.config.RemoteDictConfig;
 import com.hankcs.hanlp.utility.Predefine;
-import com.hankcs.help.ESPluginLoggerFactory;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 
 import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Project: elasticsearch-analysis-hanlp
@@ -33,11 +35,26 @@ public class Dictionary {
      */
     private static final String REMOTE_CONFIG_FILE_NAME = "hanlp-remote.xml";
 
-    private static final Logger logger = ESPluginLoggerFactory.getLogger(Dictionary.class.getName());
+    private static final Logger logger = LogManager.getLogger(Dictionary.class);
 
-    private static final ScheduledExecutorService pool = Executors.newScheduledThreadPool(1);
+    private static final ScheduledExecutorService pool = Executors.newScheduledThreadPool(1, new ThreadFactory() {
+
+        private final AtomicInteger counter = new AtomicInteger();
+
+        @Override
+        public Thread newThread(Runnable r) {
+            String threadName = "remote-dict-monitor-" + counter.getAndIncrement();
+            return new Thread(r, threadName);
+        }
+    });
+
+    private final Configuration configuration;
 
     private Dictionary(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    private void setUp() {
         Path configDir = configuration.getEnvironment().configFile().resolve(AnalysisHanLPPlugin.PLUGIN_NAME);
         Predefine.HANLP_PROPERTIES_PATH = configDir.resolve(CONFIG_FILE_NAME).toString();
         logger.debug("hanlp properties path: {}", Predefine.HANLP_PROPERTIES_PATH);
@@ -51,13 +68,14 @@ public class Dictionary {
             synchronized (Dictionary.class) {
                 if (singleton == null) {
                     singleton = new Dictionary(configuration);
+                    singleton.setUp();
                     pool.scheduleAtFixedRate(new ExtMonitor(), 10, 60, TimeUnit.SECONDS);
                     if (configuration.isEnableRemoteDict()) {
-                        for (String location : RemoteDictConfig.getSingleton().getRemoteExtDictionarys()) {
+                        for (String location : RemoteDictConfig.getSingleton().getRemoteExtDictionaries()) {
                             pool.scheduleAtFixedRate(new RemoteMonitor(location, "custom"), 10, 60, TimeUnit.SECONDS);
                         }
 
-                        for (String location : RemoteDictConfig.getSingleton().getRemoteExtStopWordDictionarys()) {
+                        for (String location : RemoteDictConfig.getSingleton().getRemoteExtStopWordDictionaries()) {
                             pool.scheduleAtFixedRate(new RemoteMonitor(location, "stop"), 10, 60, TimeUnit.SECONDS);
                         }
                     }

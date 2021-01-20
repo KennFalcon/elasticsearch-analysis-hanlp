@@ -1,13 +1,12 @@
 package com.hankcs.dic.config;
 
 import com.hankcs.dic.Dictionary;
-import com.hankcs.help.ESPluginLoggerFactory;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.core.internal.io.IOUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +25,15 @@ public class RemoteDictConfig {
      */
     private static RemoteDictConfig singleton;
 
-    private static final Logger logger = ESPluginLoggerFactory.getLogger(RemoteDictConfig.class.getName());
+    private static final Logger logger = LogManager.getLogger(RemoteDictConfig.class);
 
     private static final String REMOTE_EXT_DICT = "remote_ext_dict";
 
     private static final String REMOTE_EXT_STOP = "remote_ext_stopwords";
 
-    private Properties props;
+    private final Properties props;
 
-    private String configFile;
+    private final String configFile;
 
     private RemoteDictConfig(String configFile) {
         this.configFile = configFile;
@@ -42,7 +41,7 @@ public class RemoteDictConfig {
         loadConfig();
     }
 
-    public static synchronized RemoteDictConfig initial(String configFile) {
+    public static synchronized void initial(String configFile) {
         if (singleton == null) {
             synchronized (Dictionary.class) {
                 if (singleton == null) {
@@ -50,10 +49,9 @@ public class RemoteDictConfig {
                 }
             }
         }
-        return singleton;
     }
 
-    public boolean loadConfig() {
+    public void loadConfig() {
         InputStream input = null;
         try {
             logger.info("try load remote hanlp config from {}", configFile);
@@ -61,30 +59,23 @@ public class RemoteDictConfig {
             props.loadFromXML(input);
         } catch (FileNotFoundException e) {
             logger.error("remote hanlp config isn't exist", e);
-            return false;
         } catch (Exception e) {
             logger.error("can not load remote hanlp config", e);
-            return false;
         } finally {
-            try {
-                IOUtils.close(input);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeWhileHandlingException(input);
         }
-        return true;
     }
 
-    public List<String> getRemoteExtDictionarys() {
+    public List<String> getRemoteExtDictionaries() {
         return getRemoteExtFiles(REMOTE_EXT_DICT);
     }
 
-    public List<String> getRemoteExtStopWordDictionarys() {
+    public List<String> getRemoteExtStopWordDictionaries() {
         return getRemoteExtFiles(REMOTE_EXT_STOP);
     }
 
     private List<String> getRemoteExtFiles(String key) {
-        List<String> remoteExtFiles = new ArrayList<String>(2);
+        List<String> remoteExtFiles = new ArrayList<>(2);
         String remoteExtStopWordDictCfg = getProperty(key);
         if (remoteExtStopWordDictCfg != null) {
 

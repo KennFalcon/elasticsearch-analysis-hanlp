@@ -1,13 +1,10 @@
 buildscript {
-    ext {
-        elasticsearchVersion = "7.5.1"
-    }
     repositories {
         mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath "org.elasticsearch.gradle:build-tools:$elasticsearchVersion"
+        classpath "org.elasticsearch.gradle:build-tools:${elasticsearchVersion}"
     }
 }
 
@@ -20,12 +17,33 @@ apply plugin: 'idea'
 apply plugin: 'elasticsearch.esplugin'
 
 esplugin {
-    name rootProject.name
+    name 'analysis-hanlp'
     description 'HanLP Analyzer for ElasticSearch'
     classname 'org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin'
-    licenseFile rootProject.file('LICENSE.txt')
-    noticeFile rootProject.file('NOTICE.txt')
+    licenseFile = rootProject.file('LICENSE.txt')
+    noticeFile = rootProject.file('NOTICE.txt')
 }
+
+jar {
+    archiveBaseName.set(rootProject.name)
+}
+
+javadocJar {
+    archiveBaseName.set(rootProject.name)
+}
+
+sourcesJar {
+    archiveBaseName.set(rootProject.name)
+}
+
+task rename(type: Sync) {
+    dependsOn allprojects*.tasks.bundlePlugin
+    from('build/distributions/')
+    into('build/distributions/')
+    rename "analysis-hanlp-${elasticsearchVersion}.zip", "${rootProject.name}-${elasticsearchVersion}.zip"
+}
+
+assemble.dependsOn(rename)
 
 configurations.all() {
     Configuration configuration ->
@@ -33,48 +51,51 @@ configurations.all() {
         configuration.resolutionStrategy.force(['commons-codec:commons-codec:1.15'])
         configuration.resolutionStrategy.force(['commons-logging:commons-logging:1.2'])
         configuration.resolutionStrategy.force(['org.apache.httpcomponents:httpclient:4.5.13'])
-        configuration.resolutionStrategy.force(['org.apache.httpcomponents:httpcore:4.4.13'])
+        configuration.resolutionStrategy.force(['org.apache.httpcomponents:httpcore:4.4.14'])
 }
 
 dependencies {
-    implementation 'com.hankcs:hanlp:portable-1.7.6'
-    implementation 'commons-codec:commons-codec:1.15'
-    implementation 'commons-logging:commons-logging:1.2'
-    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
-    compileOnly 'org.projectlombok:lombok:1.18.16'
+    compile 'com.hankcs:hanlp:portable-1.7.8'
+    compile 'commons-codec:commons-codec:1.15'
+    compile 'commons-logging:commons-logging:1.2'
+    compile 'org.apache.httpcomponents:httpclient:4.5.13'
+    compile 'org.apache.httpcomponents:httpcore:4.4.14'
 }
 
 checkstyle {
-    toolVersion = '8.10.1'
     sourceSets = [project.sourceSets.main]
 }
 
-checkstyleTest {
-    checkstyleTest.enabled = false
+checkstyleMain {
+    excludes = ['**/PorterStemmer.java']
 }
 
 forbiddenApisMain {
-    forbiddenApisMain.enabled = false
+    excludes = ['**/PorterStemmer.class',
+                '**/RemoteDictConfig.class',
+                '**/DictionaryFileCache.class',
+                '**/ExtMonitor.class'
+    ]
 }
 
-forbiddenApisTest {
-    forbiddenApisTest.enabled = false
-}
-
-dependencyLicenses {
-    dependencyLicenses.enabled = false
+forbiddenPatterns {
+    forbiddenPatterns.enabled = false;
 }
 
 licenseHeaders {
     licenseHeaders.enabled = false
 }
 
-integTestRunner {
-    integTestRunner.enabled = false
+test {
+    systemProperty 'tests.security.manager', 'false'
 }
 
-thirdPartyAudit {
-    thirdPartyAudit.enabled = false
+integTest {
+    integTest.enabled = false
+}
+
+testingConventions {
+    testingConventions.enabled = false
 }
 
 javadoc {

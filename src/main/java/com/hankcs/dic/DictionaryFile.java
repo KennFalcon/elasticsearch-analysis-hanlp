@@ -10,7 +10,8 @@ import java.util.Objects;
  * Project: elasticsearch-analysis-hanlp
  * Description: 自定义词典文件信息
  * Author: Kenn
- * Create: 2018-12-14 15:10
+ * Create:
+ * 2018-12-14 15:10
  */
 public class DictionaryFile {
 
@@ -23,38 +24,14 @@ public class DictionaryFile {
     public DictionaryFile() {
     }
 
-    DictionaryFile(String path, long lastModified) {
+    public DictionaryFile(String path, long lastModified) {
         this.path = path;
         this.lastModified = lastModified;
     }
 
-    DictionaryFile(String path, String type, long lastModified) {
+    public DictionaryFile(String path, String type, long lastModified) {
         this(path, lastModified);
         this.type = type;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public long getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(long lastModified) {
-        this.lastModified = lastModified;
     }
 
     public void write(DataOutputStream out) throws IOException {
@@ -75,6 +52,7 @@ public class DictionaryFile {
         out.writeLong(lastModified);
     }
 
+    @SuppressWarnings("all")
     public void read(DataInputStream in) throws IOException {
         int pathLength = in.readInt();
         if (pathLength != 0) {

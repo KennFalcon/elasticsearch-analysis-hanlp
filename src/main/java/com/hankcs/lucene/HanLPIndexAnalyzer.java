@@ -18,21 +18,24 @@ public class HanLPIndexAnalyzer extends Analyzer {
     /**
      * 分词配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HanLPIndexAnalyzer(Configuration configuration) {
-        this.configuration = configuration;
-        this.configuration.enableIndexMode(true);
-    }
-
-    public HanLPIndexAnalyzer() {
         super();
+        this.configuration = configuration;
+        enableConfiguration();
     }
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
         return new Analyzer.TokenStreamComponents(
-            TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)() ->
-                HanLP.newSegment().enableIndexMode(true)), configuration));
+                TokenizerBuilder.tokenizer(
+                        AccessController.doPrivileged(
+                                (PrivilegedAction<Segment>) () -> HanLP.newSegment().enableIndexMode(true)),
+                        configuration));
+    }
+
+    private void enableConfiguration() {
+        this.configuration.enableIndexMode(true);
     }
 }

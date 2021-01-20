@@ -3,14 +3,16 @@ package com.hankcs.dic;
 import com.hankcs.dic.cache.DictionaryFileCache;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.utility.Predefine;
-import com.hankcs.help.ESPluginLoggerFactory;
 import com.hankcs.utility.CustomDictionaryUtility;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.elasticsearch.SpecialPermission;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import java.util.Properties;
  */
 public class ExtMonitor implements Runnable {
 
-    private static final Logger logger = ESPluginLoggerFactory.getLogger(ExtMonitor.class.getName());
+    private static final Logger logger = LogManager.getLogger(ExtMonitor.class);
 
     ExtMonitor() {
         SecurityManager sm = System.getSecurityManager();
@@ -37,15 +39,15 @@ public class ExtMonitor implements Runnable {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void run() {
         List<DictionaryFile> originalDictionaryFileList = DictionaryFileCache.getCustomDictionaryFileList();
         logger.debug("hanlp original custom dictionary: {}", Arrays.toString(originalDictionaryFileList.toArray()));
         reloadProperty();
-        List<DictionaryFile> currentDictironaryFileList = getCurrentDictionaryFileList(HanLP.Config.CustomDictionaryPath);
-        logger.debug("hanlp current custom dictionary: {}", Arrays.toString(currentDictironaryFileList.toArray()));
+        List<DictionaryFile> currentDictionaryFileList = getCurrentDictionaryFileList(HanLP.Config.CustomDictionaryPath);
+        logger.debug("hanlp current custom dictionary: {}", Arrays.toString(currentDictionaryFileList.toArray()));
         boolean isModified = false;
-        for (DictionaryFile currentDictionaryFile : currentDictironaryFileList) {
+        for (DictionaryFile currentDictionaryFile : currentDictionaryFileList) {
             if (!originalDictionaryFileList.contains(currentDictionaryFile)) {
                 isModified = true;
                 break;
@@ -58,7 +60,7 @@ public class ExtMonitor implements Runnable {
             } catch (Exception e) {
                 logger.error("can not reload hanlp custom dictionary", e);
             }
-            DictionaryFileCache.setCustomDictionaryFileList(currentDictironaryFileList);
+            DictionaryFileCache.setCustomDictionaryFileList(currentDictionaryFileList);
             DictionaryFileCache.writeCache();
             logger.info("finish reload hanlp custom dictionary");
         } else {
@@ -66,15 +68,21 @@ public class ExtMonitor implements Runnable {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void reloadProperty() {
         Properties p = new Properties();
         try {
-            ClassLoader loader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
+            ClassLoader loader = AccessController.doPrivileged(
+                    (PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader()
+            );
             if (loader == null) {
                 loader = HanLP.Config.class.getClassLoader();
             }
-            p.load(new InputStreamReader(Predefine.HANLP_PROPERTIES_PATH == null ? Objects.requireNonNull(loader.getResourceAsStream("hanlp.properties")) : new FileInputStream(Predefine.HANLP_PROPERTIES_PATH), "UTF-8"));
+            p.load(
+                    new InputStreamReader(Predefine.HANLP_PROPERTIES_PATH == null
+                            ? Objects.requireNonNull(loader.getResourceAsStream("hanlp.properties"))
+                            : new FileInputStream(Predefine.HANLP_PROPERTIES_PATH), StandardCharsets.UTF_8)
+            );
             String root = p.getProperty("root", "").replaceAll("\\\\", "/");
             if (root.length() > 0 && !root.endsWith("/")) {
                 root += "/";

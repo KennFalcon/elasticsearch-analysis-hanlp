@@ -18,18 +18,18 @@ public class HanLPStandardAnalyzer extends Analyzer {
     /**
      * 分词配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HanLPStandardAnalyzer(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public HanLPStandardAnalyzer() {
         super();
+        this.configuration = configuration;
     }
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration));
+        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(
+                AccessController.doPrivileged(
+                        (PrivilegedAction<Segment>) HanLP::newSegment),
+                configuration));
     }
 }

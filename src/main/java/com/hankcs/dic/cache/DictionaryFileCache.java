@@ -2,12 +2,17 @@ package com.hankcs.dic.cache;
 
 import com.hankcs.cfg.Configuration;
 import com.hankcs.dic.DictionaryFile;
-import com.hankcs.help.ESPluginLoggerFactory;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.core.internal.io.IOUtils;
 import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -23,7 +28,7 @@ import java.util.List;
  */
 public class DictionaryFileCache {
 
-    private static final Logger logger = ESPluginLoggerFactory.getLogger(DictionaryFileCache.class.getName());
+    private static final Logger logger = LogManager.getLogger(DictionaryFileCache.class);
 
     private static Path cachePath = null;
 
@@ -32,7 +37,9 @@ public class DictionaryFileCache {
     private static List<DictionaryFile> customDictionaryFileList = new ArrayList<>();
 
     public static synchronized void configCachePath(Configuration configuration) {
-        cachePath = configuration.getEnvironment().pluginsFile().resolve(AnalysisHanLPPlugin.PLUGIN_NAME).resolve(DICTIONARY_FILE_CACHE_RECORD_FILE);
+        cachePath = configuration.getEnvironment().pluginsFile()
+                .resolve(AnalysisHanLPPlugin.PLUGIN_NAME)
+                .resolve(DICTIONARY_FILE_CACHE_RECORD_FILE);
     }
 
     public static void loadCache() {
@@ -54,11 +61,7 @@ public class DictionaryFileCache {
             } catch (IOException e) {
                 logger.debug("can not load custom dictionary cache file", e);
             } finally {
-                try {
-                    IOUtils.close(in);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                IOUtils.closeWhileHandlingException(in);
             }
             return dictionaryFileList;
         });
@@ -69,21 +72,18 @@ public class DictionaryFileCache {
         AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
             DataOutputStream out = null;
             try {
-                logger.info("begin write down hanlp custom dictionary file cache, file path: {}, custom dictionary file list: {}", cachePath.toFile().getAbsolutePath(), Arrays.toString(customDictionaryFileList.toArray()));
+                logger.info("begin write down HanLP custom dictionary file cache, file path: {}, custom dictionary file list: {}",
+                        cachePath.toFile().getAbsolutePath(), Arrays.toString(customDictionaryFileList.toArray()));
                 out = new DataOutputStream(new FileOutputStream(cachePath.toFile()));
                 out.writeInt(customDictionaryFileList.size());
                 for (DictionaryFile dictionaryFile : customDictionaryFileList) {
                     dictionaryFile.write(out);
                 }
-                logger.info("write down hanlp custom dictionary file cache successfully");
+                logger.info("write down HanLP custom dictionary file cache successfully");
             } catch (IOException e) {
-                logger.debug("can not write down hanlp custom dictionary file cache", e);
+                logger.debug("can not write down HanLP custom dictionary file cache", e);
             } finally {
-                try {
-                    IOUtils.close(out);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                IOUtils.closeWhileHandlingException(out);
             }
             return null;
         });

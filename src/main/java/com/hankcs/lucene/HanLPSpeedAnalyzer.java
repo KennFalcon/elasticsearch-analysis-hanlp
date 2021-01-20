@@ -18,21 +18,23 @@ public class HanLPSpeedAnalyzer extends Analyzer {
     /**
      * 分词配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HanLPSpeedAnalyzer(Configuration configuration) {
-        this.configuration = configuration;
-        this.configuration.enableCustomDictionary(false);
-    }
-
-    public HanLPSpeedAnalyzer() {
         super();
+        this.configuration = configuration;
+        enableConfiguration();
     }
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(AccessController
-                .doPrivileged((PrivilegedAction<Segment>)() -> new DoubleArrayTrieSegment().enableCustomDictionary(false)),
-            configuration));
+        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(
+                AccessController.doPrivileged(
+                        (PrivilegedAction<Segment>) () -> new DoubleArrayTrieSegment().enableCustomDictionary(false)),
+                configuration));
+    }
+
+    private void enableConfiguration() {
+        this.configuration.enableCustomDictionary(false);
     }
 }

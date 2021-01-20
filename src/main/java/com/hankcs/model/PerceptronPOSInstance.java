@@ -14,7 +14,7 @@ import java.io.IOException;
 public class PerceptronPOSInstance {
 
     //使用volatile关键字保其可见性
-    volatile private static PerceptronPOSInstance instance = null;
+    private static volatile PerceptronPOSInstance instance = null;
 
     public static PerceptronPOSInstance getInstance() {
         if (instance == null) {

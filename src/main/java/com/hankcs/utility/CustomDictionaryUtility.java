@@ -9,11 +9,15 @@ import com.hankcs.hanlp.dictionary.CustomDictionary;
 import com.hankcs.hanlp.dictionary.other.CharTable;
 import com.hankcs.hanlp.utility.LexiconUtility;
 import com.hankcs.hanlp.utility.Predefine;
-import com.hankcs.hanlp.utility.TextUtility;
-import com.hankcs.help.ESPluginLoggerFactory;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -28,10 +32,10 @@ import java.util.TreeMap;
  */
 public class CustomDictionaryUtility {
 
-    private static final Logger logger = ESPluginLoggerFactory.getLogger(CustomDictionaryUtility.class.getName());
+    private static final Logger logger = LogManager.getLogger(CustomDictionaryUtility.class);
 
     public static boolean reload() {
-        CustomDictionary.dat.getSize();
+        logger.debug("hanlp custom dictionary model size before reload: {}", CustomDictionary.dat.getSize());
         String[] paths = HanLP.Config.CustomDictionaryPath;
         if (paths == null || paths.length == 0) {
             return false;
@@ -58,7 +62,8 @@ public class CustomDictionaryUtility {
                     try {
                         defaultNature = LexiconUtility.convertStringToNature(nature, customNatureCollector);
                     } catch (Exception e) {
-                        logger.error("hanlp config file [{}] write error", path, e);
+                        String finalPath = path;
+                        logger.error(() -> new ParameterizedMessage("hanlp config file [{}] write error", finalPath), e);
                         continue;
                     }
                 }
@@ -92,14 +97,16 @@ public class CustomDictionaryUtility {
             logger.debug("hanlp traverse custom words to write into file successfully");
             CustomDictionary.dat.save(out);
             out.close();
+            logger.debug("hanlp custom dictionary model size after reload: {}", CustomDictionary.dat.getSize());
         } catch (FileNotFoundException e) {
-            logger.error("hanlp custom dictionary main path [{}] is not exist", mainPath, e);
+            logger.error(() -> new ParameterizedMessage("hanlp custom dictionary main path [{}] is not exist", mainPath), e);
             return false;
         } catch (IOException e) {
-            logger.error("hanlp custom dictionary main path [{}] read failed", mainPath, e);
+            logger.error(() -> new ParameterizedMessage("hanlp custom dictionary main path [{}] read failed", mainPath), e);
             return false;
         } catch (Exception e) {
-            logger.warn("hanlp custom dictionary cache failed, main path: {}, error: {}", mainPath, TextUtility.exceptionToString(e));
+            logger.error(() -> new ParameterizedMessage("hanlp custom dictionary cache failed, main path: {}", mainPath), e);
+            return false;
         }
         return true;
     }
@@ -112,7 +119,8 @@ public class CustomDictionaryUtility {
      * @param customNatureCollector 收集用户词性
      * @return 成功返回true，失败返回false
      */
-    private static boolean load(String path, Nature defaultNature, TreeMap<String, CoreDictionary.Attribute> map, LinkedHashSet<Nature> customNatureCollector) {
+    private static boolean load(String path, Nature defaultNature, TreeMap<String, CoreDictionary.Attribute> map,
+                                LinkedHashSet<Nature> customNatureCollector) {
         try {
             String splitter = "\\s";
             if (path.endsWith(".csv")) {
@@ -151,7 +159,7 @@ public class CustomDictionaryUtility {
             }
             br.close();
         } catch (Exception e) {
-            logger.error("hanlp custom dictionary [{}] read failed!", path, e);
+            logger.error(() -> new ParameterizedMessage("hanlp custom dictionary [{}] read failed!", path), e);
             return false;
         }
         return true;

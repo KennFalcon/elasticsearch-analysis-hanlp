@@ -22,24 +22,23 @@ public class HanLPNLPAnalyzer extends Analyzer {
     /**
      * 分词配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HanLPNLPAnalyzer(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public HanLPNLPAnalyzer() {
         super();
+        this.configuration = configuration;
     }
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
         return new Analyzer.TokenStreamComponents(
-            TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)() ->
-                    new PerceptronLexicalAnalyzer(
-                            PerceptronCWSInstance.getInstance().getLinearModel(),
-                            PerceptronPOSInstance.getInstance().getLinearModel(),
-                            PerceptronNERInstance.getInstance().getLinearModel()
-                    )), configuration));
+                TokenizerBuilder.tokenizer(
+                        AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                new PerceptronLexicalAnalyzer(
+                                        PerceptronCWSInstance.getInstance().getLinearModel(),
+                                        PerceptronPOSInstance.getInstance().getLinearModel(),
+                                        PerceptronNERInstance.getInstance().getLinearModel()
+                                )),
+                        configuration));
     }
 }

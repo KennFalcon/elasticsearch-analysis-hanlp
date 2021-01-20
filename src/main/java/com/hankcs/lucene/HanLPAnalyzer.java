@@ -30,6 +30,9 @@ public class HanLPAnalyzer extends Analyzer {
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration));
+        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(
+                AccessController.doPrivileged(
+                        (PrivilegedAction<Segment>) HanLP::newSegment),
+                configuration));
     }
 }
