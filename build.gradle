@@ -90,6 +90,10 @@ dependencyLicenses {
     dependencyLicenses.enabled = false
 }
 
+thirdPartyAudit {
+    thirdPartyAudit.enabled = false
+}
+
 test {
     systemProperty 'tests.security.manager', 'false'
 }
