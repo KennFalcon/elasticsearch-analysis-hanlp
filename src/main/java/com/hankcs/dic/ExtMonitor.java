@@ -6,7 +6,6 @@ import com.hankcs.hanlp.utility.Predefine;
 import com.hankcs.utility.CustomDictionaryUtility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.elasticsearch.SpecialPermission;
 
 import java.io.File;
