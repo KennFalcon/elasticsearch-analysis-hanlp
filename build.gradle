@@ -86,6 +86,10 @@ licenseHeaders {
     licenseHeaders.enabled = false
 }
 
+dependencyLicenses {
+    dependencyLicenses.enabled = false
+}
+
 test {
     systemProperty 'tests.security.manager', 'false'
 }
