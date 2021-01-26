@@ -31,7 +31,7 @@ public class CoreStopWordDictionary {
         if (firstChar == 'w') {
             return false;
         } else {
-            return !com.hankcs.hanlp.dictionary.stopword.CoreStopWordDictionary.contains(term.word);
+            return !CoreStopWordDictionary.contains(term.word);
         }
     };
 
