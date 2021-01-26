@@ -36,14 +36,12 @@ sourcesJar {
     archiveBaseName.set(rootProject.name)
 }
 
-task rename(type: Sync) {
-    dependsOn allprojects*.tasks.bundlePlugin
-    from('build/distributions/')
-    into('build/distributions/')
-    rename "analysis-hanlp-${elasticsearchVersion}.zip", "${rootProject.name}-${elasticsearchVersion}.zip"
+assemble {
+    doLast {
+        file("build/distributions/analysis-hanlp-${elasticsearchVersion}.zip").renameTo(file("build/distributions/${rootProject.name}-${elasticsearchVersion}.zip"))
+        ant.checksum file: "build/distributions/${rootProject.name}-${elasticsearchVersion}.zip"
+    }
 }
-
-assemble.dependsOn(rename)
 
 configurations.all() {
     Configuration configuration ->
