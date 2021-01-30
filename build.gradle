@@ -69,10 +69,13 @@ checkstyleMain {
 }
 
 forbiddenApisMain {
-    excludes = ['**/PorterStemmer.class',
+    excludes = [
+                '**/AnalysisHanLPPlugin.class',
+                '**/PorterStemmer.class',
                 '**/RemoteDictConfig.class',
                 '**/DictionaryFileCache.class',
-                '**/ExtMonitor.class'
+                '**/ExtMonitor.class',
+                '**/model/*.class'
     ]
 }
 
