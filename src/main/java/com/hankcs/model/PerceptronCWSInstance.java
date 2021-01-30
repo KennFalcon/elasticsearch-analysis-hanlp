@@ -49,7 +49,8 @@ public class PerceptronCWSInstance {
                 model = null;
             }
         } catch (IOException e) {
-            logger.error(() -> new ParameterizedMessage("load perceptron cws model from [{}] error", HanLP.Config.PerceptronCWSModelPath), e);
+            logger.error(() ->
+                    new ParameterizedMessage("load perceptron cws model from [{}] error", HanLP.Config.PerceptronCWSModelPath), e);
             model = null;
         }
         linearModel = model;

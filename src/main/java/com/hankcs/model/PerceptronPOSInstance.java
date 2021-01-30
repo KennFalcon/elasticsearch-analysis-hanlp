@@ -22,7 +22,6 @@ public class PerceptronPOSInstance {
 
     private static final Logger logger = LogManager.getLogger(PerceptronPOSInstance.class);
 
-    //使用volatile关键字保其可见性
     private static volatile PerceptronPOSInstance instance = null;
 
     public static PerceptronPOSInstance getInstance() {
@@ -50,7 +49,8 @@ public class PerceptronPOSInstance {
                 model = null;
             }
         } catch (IOException e) {
-            logger.error(() -> new ParameterizedMessage("load perceptron pos model from [{}] error", HanLP.Config.PerceptronPOSModelPath), e);
+            logger.error(() ->
+                    new ParameterizedMessage("load perceptron pos model from [{}] error", HanLP.Config.PerceptronPOSModelPath), e);
             model = null;
         }
         linearModel = model;

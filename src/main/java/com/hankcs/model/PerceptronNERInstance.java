@@ -22,7 +22,6 @@ public class PerceptronNERInstance {
 
     private static final Logger logger = LogManager.getLogger(PerceptronNERInstance.class);
 
-    //使用volatile关键字保其可见性
     private static volatile PerceptronNERInstance instance = null;
 
     public static PerceptronNERInstance getInstance() {
@@ -50,7 +49,8 @@ public class PerceptronNERInstance {
                 model = null;
             }
         } catch (IOException e) {
-            logger.error(() -> new ParameterizedMessage("load perceptron ner model from [{}] error", HanLP.Config.PerceptronNERModelPath), e);
+            logger.error(() ->
+                    new ParameterizedMessage("load perceptron ner model from [{}] error", HanLP.Config.PerceptronNERModelPath), e);
             model = null;
         }
         linearModel = model;

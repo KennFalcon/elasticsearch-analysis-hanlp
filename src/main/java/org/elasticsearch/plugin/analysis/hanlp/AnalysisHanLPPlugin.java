@@ -1,6 +1,5 @@
 package org.elasticsearch.plugin.analysis.hanlp;
 
-import com.hankcs.dic.Dictionary;
 import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.utility.Predefine;
 import org.apache.logging.log4j.LogManager;
