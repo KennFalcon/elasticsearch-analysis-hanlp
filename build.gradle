@@ -95,6 +95,10 @@ thirdPartyAudit {
     thirdPartyAudit.enabled = false
 }
 
+validateNebulaPom {
+    validateNebulaPom.enabled = false
+}
+
 test {
     systemProperty 'tests.security.manager', 'false'
 }
