@@ -20,10 +20,13 @@ HanLP Analyzer for ElasticSearch
 6. 优化部分代码结构，修复部分代码逻辑错误问题
 7. 工程改为gradle方式部署，重新修改打包请使用`./gradlew assemble`命令，否则可能因本地gradle版本不匹配导致问题
 8. github release增加MD5校验，若发现MD5值和release包计算得出的不一致，请勿使用，网盘会一直放在那。
-9. 部分因为工作原因可能无法及时更新，请自行打包（一般ES小版本迭代不会只需要更改版本号即可，版本号在gradle.properties中修改）
-10. 6.x分支是我重新用gradle配置的一个分支，可能和原来的maven版本不一致，请大家谅解
+9. 部分版本因为工作原因可能无法及时更新，请自行打包（一般ES小版本迭代不会有大的改动，只需要更改版本号即可，版本号在gradle.properties中修改）
+10. 6.x分支是我重新用gradle配置的一个分支，可能和原来的maven版本不一致，请大家谅解（进行中）
 11. 单测的话，因为分词用到了自定义配置的东西，ES自己的test framework对这个配置加载有些问题，所以目前单测是没有的，大部分测试都是我自己直接部署进行测试的，后续会将测试点和测试项列出来供大家参考
 12. 目前来说，应该Elasticsearch开源协议更换对该插件无影响，后续未知~~（毕竟插件小众，且非云上提供）
+13. 在7.6.0版本后复原增加crf分词方式，不再采用CRFSegment，而是采用CRFLexicalAnalyzer进行分词，模型使用类似NLP方式采用单例实现
+14. 在7.6.0版本后，ES在启动时增加了analyzer校验，所以若没有配置NLP或CRF模型，则启动插件时就不会加载，若要使用两种分词方式，需要添加模型后重启ES
+15. 若要使用NLP或CRF分词方式，则配置文件hanlp.properties中模型路径配置中的文件名必须和实际名称一致（bin or txt），目前默认配置为data-for-1.7.5.zip（该数据包可在HanLP项目中下载）中的模型路基
 
 最后还是要说，开源不易，有空还是会跟进改动
 
@@ -93,6 +96,8 @@ hanlp_standard: 标准分词
 hanlp_index: 索引分词
 
 hanlp_nlp: NLP分词
+
+hanlp_crf: CRF分词
 
 hanlp_n_short: N-最短路分词
 
