@@ -6,11 +6,16 @@ import com.hankcs.hanlp.corpus.io.IOUtil;
 import com.hankcs.hanlp.dictionary.stopword.Filter;
 import com.hankcs.hanlp.dictionary.stopword.StopWordDictionary;
 import com.hankcs.hanlp.seg.common.Term;
-import com.hankcs.hanlp.utility.Predefine;
-import com.hankcs.hanlp.utility.TextUtility;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.elasticsearch.core.internal.io.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 /**
@@ -21,6 +26,8 @@ import java.util.List;
  * Create: 2019-03-18 19:16
  */
 public class CoreStopWordDictionary {
+
+    private static final Logger logger = LogManager.getLogger(CoreStopWordDictionary.class);
 
     private static final StopWordDictionary dictionary;
 
@@ -63,22 +70,45 @@ public class CoreStopWordDictionary {
     }
 
     static {
-        ByteArray byteArray = ByteArray.createByteArray(Config.CoreStopWordDictionaryPath + ".bin");
+        ByteArray byteArray = AccessController.doPrivileged((PrivilegedAction<ByteArray>) () ->
+                ByteArray.createByteArray(Config.CoreStopWordDictionaryPath + ".bin"));
         if (byteArray == null) {
             try {
-                dictionary = new StopWordDictionary(Config.CoreStopWordDictionaryPath);
-                DataOutputStream out = new DataOutputStream(
-                        new BufferedOutputStream(IOUtil.newOutputStream(Config.CoreStopWordDictionaryPath + ".bin")));
-                dictionary.save(out);
-                out.close();
-            } catch (Exception var2) {
-                Predefine.logger.severe(
-                        "载入停用词词典" + Config.CoreStopWordDictionaryPath + "失败" + TextUtility.exceptionToString(var2));
-                throw new RuntimeException("载入停用词词典" + Config.CoreStopWordDictionaryPath + "失败");
+                dictionary = AccessController.doPrivileged((PrivilegedAction<StopWordDictionary>) () -> {
+                    try {
+                        return new StopWordDictionary(Config.CoreStopWordDictionaryPath);
+                    } catch (IOException e) {
+                        logger.error(() -> new ParameterizedMessage("load stop word dictionary from [{}] error",
+                                Config.CoreStopWordDictionaryPath), e);
+                        return null;
+                    }
+                });
+                if (dictionary != null) {
+                    AccessController.doPrivileged((PrivilegedAction<Boolean>) CoreStopWordDictionary::save);
+                }
+            } catch (Exception e) {
+                logger.error(() ->
+                        new ParameterizedMessage("load stop word dictionary from [{}] error", Config.CoreStopWordDictionaryPath), e);
+                throw new RuntimeException("load stop word dictionary from [" + Config.CoreStopWordDictionaryPath + "] error");
             }
         } else {
             dictionary = new StopWordDictionary();
             dictionary.load(byteArray);
+        }
+    }
+
+    private static boolean save() {
+        DataOutputStream out = null;
+        try {
+            out = new DataOutputStream(new BufferedOutputStream(IOUtil.newOutputStream(Config.CoreStopWordDictionaryPath + ".bin")));
+            dictionary.save(out);
+            return true;
+        } catch (Exception e) {
+            logger.error(() ->
+                    new ParameterizedMessage("can not save stop word dictionary to [{}] error", Config.CoreStopWordDictionaryPath), e);
+            return false;
+        } finally {
+            IOUtils.closeWhileHandlingException(out);
         }
     }
 }
