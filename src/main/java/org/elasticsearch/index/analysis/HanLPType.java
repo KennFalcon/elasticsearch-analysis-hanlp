@@ -24,6 +24,10 @@ public enum HanLPType {
      */
     NLP,
     /**
+     * CRF分词
+     */
+    CRF,
+    /**
      * N-最短路分词
      */
     N_SHORT,

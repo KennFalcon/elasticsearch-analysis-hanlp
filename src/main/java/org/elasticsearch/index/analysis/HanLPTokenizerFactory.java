@@ -2,12 +2,16 @@ package org.elasticsearch.index.analysis;
 
 import com.hankcs.cfg.Configuration;
 import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.model.crf.CRFLexicalAnalyzer;
 import com.hankcs.hanlp.model.perceptron.PerceptronLexicalAnalyzer;
 import com.hankcs.hanlp.seg.Dijkstra.DijkstraSegment;
 import com.hankcs.hanlp.seg.NShort.NShortSegment;
 import com.hankcs.hanlp.seg.Other.DoubleArrayTrieSegment;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.lucene.TokenizerBuilder;
+import com.hankcs.model.CRFNERecognizerInstance;
+import com.hankcs.model.CRFPOSTaggerInstance;
+import com.hankcs.model.CRFSegmenterInstance;
 import com.hankcs.model.PerceptronCWSInstance;
 import com.hankcs.model.PerceptronNERInstance;
 import com.hankcs.model.PerceptronPOSInstance;
@@ -61,6 +65,11 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.NLP);
     }
 
+    public static HanLPTokenizerFactory getHanLPCRFTokenizerFactory(IndexSettings indexSettings, Environment env, String name,
+                                                                    Settings settings) {
+        return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.CRF);
+    }
+
     public static HanLPTokenizerFactory getHanLPNShortTokenizerFactory(IndexSettings indexSettings, Environment env, String name,
                                                                        Settings settings) {
         return new HanLPTokenizerFactory(indexSettings, env, name, settings, HanLPType.N_SHORT);
@@ -92,6 +101,32 @@ public class HanLPTokenizerFactory extends AbstractTokenizerFactory {
                                         PerceptronNERInstance.getInstance().getLinearModel())
                         ),
                         configuration);
+            case CRF:
+                if (CRFPOSTaggerInstance.getInstance().getTagger() == null) {
+                    return TokenizerBuilder.tokenizer(
+                            AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                    new CRFLexicalAnalyzer(
+                                            CRFSegmenterInstance.getInstance().getSegmenter()
+                                    )),
+                            configuration);
+                } else if (CRFNERecognizerInstance.getInstance().getRecognizer() == null) {
+                    return TokenizerBuilder.tokenizer(
+                            AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                    new CRFLexicalAnalyzer(
+                                            CRFSegmenterInstance.getInstance().getSegmenter(),
+                                            CRFPOSTaggerInstance.getInstance().getTagger()
+                                    )),
+                            configuration);
+                } else {
+                    return TokenizerBuilder.tokenizer(
+                            AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                    new CRFLexicalAnalyzer(
+                                            CRFSegmenterInstance.getInstance().getSegmenter(),
+                                            CRFPOSTaggerInstance.getInstance().getTagger(),
+                                            CRFNERecognizerInstance.getInstance().getRecognizer()
+                                    )),
+                            configuration);
+                }
             case N_SHORT:
                 configuration.enableCustomDictionary(false).enablePlaceRecognize(true).enableOrganizationRecognize(true);
                 return TokenizerBuilder.tokenizer(

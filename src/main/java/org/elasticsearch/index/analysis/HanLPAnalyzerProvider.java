@@ -2,6 +2,7 @@ package org.elasticsearch.index.analysis;
 
 import com.hankcs.cfg.Configuration;
 import com.hankcs.lucene.HanLPAnalyzer;
+import com.hankcs.lucene.HanLPCRFAnalyzer;
 import com.hankcs.lucene.HanLPDijkstraAnalyzer;
 import com.hankcs.lucene.HanLPIndexAnalyzer;
 import com.hankcs.lucene.HanLPNLPAnalyzer;
@@ -39,6 +40,9 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
             case NLP:
                 analyzer = new HanLPNLPAnalyzer(configuration);
                 break;
+            case CRF:
+                analyzer = new HanLPCRFAnalyzer(configuration);
+                break;
             case N_SHORT:
                 analyzer = new HanLPNShortAnalyzer(configuration);
                 break;
@@ -72,6 +76,11 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
     public static HanLPAnalyzerProvider getHanLPNLPAnalyzerProvider(IndexSettings indexSettings, Environment env, String name,
                                                                     Settings settings) {
         return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.NLP);
+    }
+
+    public static HanLPAnalyzerProvider getHanLPCRFAnalyzerProvider(IndexSettings indexSettings, Environment env, String name,
+                                                                    Settings settings) {
+        return new HanLPAnalyzerProvider(indexSettings, env, name, settings, HanLPType.CRF);
     }
 
     public static HanLPAnalyzerProvider getHanLPNShortAnalyzerProvider(IndexSettings indexSettings, Environment env, String name,
