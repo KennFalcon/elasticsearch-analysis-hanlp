@@ -3,9 +3,6 @@ package com.hankcs.dic;
 import com.hankcs.cfg.Configuration;
 import com.hankcs.dic.cache.DictionaryFileCache;
 import com.hankcs.dic.config.RemoteDictConfig;
-import com.hankcs.hanlp.utility.Predefine;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.elasticsearch.plugin.analysis.hanlp.AnalysisHanLPPlugin;
 
 import java.nio.file.Path;
@@ -23,19 +20,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Dictionary {
     /**
-     * 词典单子实例
+     * 词典实例
      */
     private static Dictionary singleton;
-    /**
-     * Hanlp配置文件名
-     */
-    private static final String CONFIG_FILE_NAME = "hanlp.properties";
     /**
      * Hanlp远程词典配置文件名
      */
     private static final String REMOTE_CONFIG_FILE_NAME = "hanlp-remote.xml";
-
-    private static final Logger logger = LogManager.getLogger(Dictionary.class);
 
     private static final ScheduledExecutorService pool = Executors.newScheduledThreadPool(1, new ThreadFactory() {
 
@@ -56,8 +47,6 @@ public class Dictionary {
 
     private void setUp() {
         Path configDir = configuration.getEnvironment().configFile().resolve(AnalysisHanLPPlugin.PLUGIN_NAME);
-        Predefine.HANLP_PROPERTIES_PATH = configDir.resolve(CONFIG_FILE_NAME).toString();
-        logger.debug("hanlp properties path: {}", Predefine.HANLP_PROPERTIES_PATH);
         DictionaryFileCache.configCachePath(configuration);
         DictionaryFileCache.loadCache();
         RemoteDictConfig.initial(configDir.resolve(REMOTE_CONFIG_FILE_NAME).toString());
