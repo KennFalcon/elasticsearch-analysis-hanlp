@@ -18,14 +18,11 @@ public class HanLPAnalyzer extends Analyzer {
     /**
      * 分词配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HanLPAnalyzer(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public HanLPAnalyzer() {
         super();
+        this.configuration = configuration;
     }
 
     @Override
