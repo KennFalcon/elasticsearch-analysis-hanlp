@@ -1,6 +1,7 @@
 grant {
   // HanLP data directories
-  permission java.io.FilePermission "<<ALL FILES>>", "read,write,delete";
+  permission java.io.FilePermission "plugins/analysis-hanlp/data/-", "read,write,delete";
+  permission java.io.FilePermission "plugins/analysis-hanlp/hanlp.cache", "read,write,delete";
 
   // needed because of problems in unbound LDAP library
   permission java.util.PropertyPermission "*", "read,write";
