@@ -38,21 +38,21 @@ public class CRFNERecognizerInstance {
     private final CRFNERecognizer recognizer;
 
     private CRFNERecognizerInstance() {
-        CRFNERecognizer crfNeRecognizer;
-        try {
-            if (FileSystemUtils.exists(Paths.get(
-                    AccessController.doPrivileged((PrivilegedAction<String>) () -> HanLP.Config.CRFNERModelPath)
-            ).toAbsolutePath())) {
-                crfNeRecognizer = new CRFNERecognizer(HanLP.Config.CRFNERModelPath);
-            } else {
-                logger.warn("can not find crf ner model from [{}]", HanLP.Config.CRFNERModelPath);
-                crfNeRecognizer = null;
-            }
-        } catch (IOException e) {
-            logger.error(() -> new ParameterizedMessage("load crf ner model from [{}] error", HanLP.Config.CRFNERModelPath), e);
-            crfNeRecognizer = null;
+        if (FileSystemUtils.exists(Paths.get(
+                AccessController.doPrivileged((PrivilegedAction<String>) () -> HanLP.Config.CRFNERModelPath)
+        ).toAbsolutePath())) {
+            recognizer = AccessController.doPrivileged((PrivilegedAction<CRFNERecognizer>) () -> {
+                try {
+                    return new CRFNERecognizer(HanLP.Config.CRFNERModelPath);
+                } catch (IOException e) {
+                    logger.error(() -> new ParameterizedMessage("load crf ner model from [{}] error", HanLP.Config.CRFNERModelPath), e);
+                    return null;
+                }
+            });
+        } else {
+            logger.warn("can not find crf ner model from [{}]", HanLP.Config.CRFNERModelPath);
+            recognizer = null;
         }
-        recognizer = crfNeRecognizer;
     }
 
     public CRFNERecognizer getRecognizer() {

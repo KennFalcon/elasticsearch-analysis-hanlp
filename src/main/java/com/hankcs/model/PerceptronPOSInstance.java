@@ -38,22 +38,22 @@ public class PerceptronPOSInstance {
     private final LinearModel linearModel;
 
     private PerceptronPOSInstance() {
-        LinearModel model;
-        try {
-            if (FileSystemUtils.exists(Paths.get(
-                    AccessController.doPrivileged((PrivilegedAction<String>) () -> HanLP.Config.PerceptronPOSModelPath)
-            ).toAbsolutePath())) {
-                model = new LinearModel(HanLP.Config.PerceptronPOSModelPath);
-            } else {
-                logger.warn("can not find perceptron pos model from [{}]", HanLP.Config.PerceptronPOSModelPath);
-                model = null;
-            }
-        } catch (IOException e) {
-            logger.error(() ->
-                    new ParameterizedMessage("load perceptron pos model from [{}] error", HanLP.Config.PerceptronPOSModelPath), e);
-            model = null;
+        if (FileSystemUtils.exists(Paths.get(
+                AccessController.doPrivileged((PrivilegedAction<String>) () -> HanLP.Config.PerceptronPOSModelPath)
+        ).toAbsolutePath())) {
+            linearModel = AccessController.doPrivileged((PrivilegedAction<LinearModel>) () -> {
+                try {
+                    return new LinearModel(HanLP.Config.PerceptronPOSModelPath);
+                } catch (IOException e) {
+                    logger.error(() ->
+                            new ParameterizedMessage("load perceptron pos model from [{}] error", HanLP.Config.PerceptronPOSModelPath), e);
+                    return null;
+                }
+            });
+        } else {
+            logger.warn("can not find perceptron pos model from [{}]", HanLP.Config.PerceptronPOSModelPath);
+            linearModel = null;
         }
-        linearModel = model;
     }
 
     public LinearModel getLinearModel() {

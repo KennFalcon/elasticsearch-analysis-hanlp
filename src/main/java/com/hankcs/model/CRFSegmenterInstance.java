@@ -38,21 +38,21 @@ public class CRFSegmenterInstance {
     private final CRFSegmenter segmenter;
 
     private CRFSegmenterInstance() {
-        CRFSegmenter crfSegmenter;
-        try {
-            if (FileSystemUtils.exists(Paths.get(
-                    AccessController.doPrivileged((PrivilegedAction<String>) () -> HanLP.Config.CRFCWSModelPath)
-            ).toAbsolutePath())) {
-                crfSegmenter = new CRFSegmenter(HanLP.Config.CRFCWSModelPath);
-            } else {
-                logger.warn("can not find crf cws model from [{}]", HanLP.Config.CRFCWSModelPath);
-                crfSegmenter = null;
-            }
-        } catch (IOException e) {
-            logger.error(() -> new ParameterizedMessage("load crf cws model from [{}] error", HanLP.Config.CRFCWSModelPath), e);
-            crfSegmenter = null;
+        if (FileSystemUtils.exists(Paths.get(
+                AccessController.doPrivileged((PrivilegedAction<String>) () -> HanLP.Config.CRFCWSModelPath)
+        ).toAbsolutePath())) {
+            segmenter = AccessController.doPrivileged((PrivilegedAction<CRFSegmenter>) () -> {
+                try {
+                    return new CRFSegmenter(HanLP.Config.CRFCWSModelPath);
+                } catch (IOException e) {
+                    logger.error(() -> new ParameterizedMessage("load crf cws model from [{}] error", HanLP.Config.CRFCWSModelPath), e);
+                    return null;
+                }
+            });
+        } else {
+            logger.warn("can not find crf cws model from [{}]", HanLP.Config.CRFCWSModelPath);
+            segmenter = null;
         }
-        segmenter = crfSegmenter;
     }
 
     public CRFSegmenter getSegmenter() {

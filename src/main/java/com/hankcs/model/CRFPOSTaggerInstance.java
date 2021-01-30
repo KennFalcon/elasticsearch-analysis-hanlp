@@ -38,21 +38,21 @@ public class CRFPOSTaggerInstance {
     private final CRFPOSTagger tagger;
 
     private CRFPOSTaggerInstance() {
-        CRFPOSTagger crfPosTagger;
-        try {
-            if (FileSystemUtils.exists(Paths.get(
-                    AccessController.doPrivileged((PrivilegedAction<String>) () -> HanLP.Config.CRFPOSModelPath)
-            ).toAbsolutePath())) {
-                crfPosTagger = new CRFPOSTagger(HanLP.Config.CRFPOSModelPath);
-            } else {
-                logger.warn("can not find crf pos model from [{}]", HanLP.Config.CRFPOSModelPath);
-                crfPosTagger = null;
-            }
-        } catch (IOException e) {
-            logger.error(() -> new ParameterizedMessage("load crf pos model from [{}] error", HanLP.Config.CRFPOSModelPath), e);
-            crfPosTagger = null;
+        if (FileSystemUtils.exists(Paths.get(
+                AccessController.doPrivileged((PrivilegedAction<String>) () -> HanLP.Config.CRFPOSModelPath)
+        ).toAbsolutePath())) {
+            tagger = AccessController.doPrivileged((PrivilegedAction<CRFPOSTagger>) () -> {
+                try {
+                    return new CRFPOSTagger(HanLP.Config.CRFPOSModelPath);
+                } catch (IOException e) {
+                    logger.error(() -> new ParameterizedMessage("load crf pos model from [{}] error", HanLP.Config.CRFPOSModelPath), e);
+                    return null;
+                }
+            });
+        } else {
+            logger.warn("can not find crf pos model from [{}]", HanLP.Config.CRFPOSModelPath);
+            tagger = null;
         }
-        tagger = crfPosTagger;
     }
 
     public CRFPOSTagger getTagger() {
