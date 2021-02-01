@@ -42,7 +42,6 @@ public class AnalysisHanLPPlugin extends Plugin implements AnalysisPlugin {
      */
     private static final String CONFIG_FILE_NAME = "hanlp.properties";
 
-    @Inject
     public AnalysisHanLPPlugin(Settings settings) {
         String home = null;
         if (Environment.PATH_HOME_SETTING.exists(settings)) {
@@ -76,7 +75,7 @@ public class AnalysisHanLPPlugin extends Plugin implements AnalysisPlugin {
         if (FileSystemUtils.exists(Paths.get(
                 AccessController.doPrivileged((PrivilegedAction<String>) () -> HanLP.Config.CRFCWSModelPath)
         ).toAbsolutePath())) {
-            extra.put("hanlp_crf", HanLPTokenizerFactory::getHanLPNLPTokenizerFactory);
+            extra.put("hanlp_crf", HanLPTokenizerFactory::getHanLPCRFTokenizerFactory);
         } else {
             logger.warn("can not find crf cws model from [{}], you can not use tokenizer [hanlp_crf]",
                     HanLP.Config.CRFCWSModelPath);
