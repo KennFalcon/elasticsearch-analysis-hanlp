@@ -36,17 +36,17 @@ public class HanLPTokenizer extends Tokenizer {
     /**
      * 词性
      */
-    private TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
+    private final TypeAttribute typeAtt = addAttribute(TypeAttribute.class);
     /**
      * 配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
     /**
      * 分词器
      */
-    private SegmentWrapper segment;
+    private final SegmentWrapper segment;
     /**
-     *
+     * stemmer
      */
     private final PorterStemmer stemmer = new PorterStemmer();
 
@@ -65,7 +65,7 @@ public class HanLPTokenizer extends Tokenizer {
     }
 
     @Override
-    final public boolean incrementToken() throws IOException {
+    public final boolean incrementToken() throws IOException {
         clearAttributes();
         int position = 0;
         Term term;
@@ -85,7 +85,7 @@ public class HanLPTokenizer extends Tokenizer {
             }
             final Term copyTerm = term;
             if ((!this.configuration.isEnableStopDictionary()) || (!AccessController.doPrivileged(
-                (PrivilegedAction<Boolean>)() -> CoreStopWordDictionary.shouldRemove(copyTerm)))) {
+                    (PrivilegedAction<Boolean>) () -> CoreStopWordDictionary.shouldRemove(copyTerm)))) {
                 position++;
                 unIncreased = false;
             } else {

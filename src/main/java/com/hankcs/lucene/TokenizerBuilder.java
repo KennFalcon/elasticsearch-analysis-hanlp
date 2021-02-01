@@ -1,9 +1,9 @@
 package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
+import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.seg.Segment;
 import com.hankcs.hanlp.seg.common.Term;
-import com.hankcs.hanlp.tokenizer.TraditionalChineseTokenizer;
 import org.apache.lucene.analysis.Tokenizer;
 
 import java.security.AccessController;
@@ -11,10 +11,10 @@ import java.security.PrivilegedAction;
 import java.util.List;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description:
- * @author: Kenn
- * @create: 2019-04-25 09:47
+ * Project: elasticsearch-analysis-hanlp
+ * Description:
+ * Author: Kenn
+ * Create: 2019-04-25 09:47
  */
 public class TokenizerBuilder {
 
@@ -52,12 +52,10 @@ public class TokenizerBuilder {
             .enablePartOfSpeechTagging(configuration.isEnablePartOfSpeechTagging())
             .enableOffset(configuration.isEnableOffset());
         if (configuration.isEnableTraditionalChineseMode()) {
-            segment.enableIndexMode(false);
-            TraditionalChineseTokenizer.SEGMENT = segment;
             return new Segment() {
                 @Override
                 protected List<Term> segSentence(char[] sentence) {
-                    return TraditionalChineseTokenizer.segment(new String(sentence));
+                    return segment.seg(HanLP.convertToSimplifiedChinese(new String(sentence)));
                 }
             };
         }

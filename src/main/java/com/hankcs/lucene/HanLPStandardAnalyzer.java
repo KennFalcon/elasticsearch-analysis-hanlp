@@ -9,27 +9,27 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 标准分析器
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 标准分析器
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class HanLPStandardAnalyzer extends Analyzer {
     /**
      * 分词配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HanLPStandardAnalyzer(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    public HanLPStandardAnalyzer() {
         super();
+        this.configuration = configuration;
     }
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)HanLP::newSegment), configuration));
+        return new Analyzer.TokenStreamComponents(TokenizerBuilder.tokenizer(
+                AccessController.doPrivileged(
+                        (PrivilegedAction<Segment>) HanLP::newSegment),
+                configuration));
     }
 }

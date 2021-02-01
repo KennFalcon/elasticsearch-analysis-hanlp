@@ -6,16 +6,16 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 配置信息
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 配置信息
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class Configuration {
 
-    private Environment environment;
+    private final Environment environment;
 
-    private Settings settings;
+    private final Settings settings;
 
     private boolean enablePorterStemming;
 

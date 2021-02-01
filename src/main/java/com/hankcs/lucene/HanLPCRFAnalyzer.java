@@ -1,50 +1,63 @@
 package com.hankcs.lucene;
 
 import com.hankcs.cfg.Configuration;
-import com.hankcs.hanlp.HanLP;
 import com.hankcs.hanlp.model.crf.CRFLexicalAnalyzer;
 import com.hankcs.hanlp.seg.Segment;
-import com.hankcs.help.ESPluginLoggerFactory;
-import org.apache.logging.log4j.Logger;
+import com.hankcs.model.CRFNERecognizerInstance;
+import com.hankcs.model.CRFPOSTaggerInstance;
+import com.hankcs.model.CRFSegmenterInstance;
 import org.apache.lucene.analysis.Analyzer;
 
-import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: CRF分析器
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: CRF分析器
+ * Author: Kenn
+ * Create: 2021-01-30 01:22
  */
 public class HanLPCRFAnalyzer extends Analyzer {
-
-    private static final Logger logger = ESPluginLoggerFactory.getLogger(HanLPCRFAnalyzer.class.getName());
 
     /**
      * 分词配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HanLPCRFAnalyzer(Configuration configuration) {
+        super();
         this.configuration = configuration;
     }
 
-    public HanLPCRFAnalyzer() {
-        super();
-    }
-
     @Override
-    protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
-        return new Analyzer.TokenStreamComponents(
-            TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)() -> {
-                try {
-                    return new CRFLexicalAnalyzer();
-                } catch (IOException e) {
-                    logger.error("can not use crf analyzer, provider default", e);
-                    return HanLP.newSegment();
-                }
-            }), configuration));
+    protected TokenStreamComponents createComponents(String fieldName) {
+        if (CRFPOSTaggerInstance.getInstance().getTagger() == null) {
+            return new TokenStreamComponents(
+                    TokenizerBuilder.tokenizer(
+                            AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                    new CRFLexicalAnalyzer(
+                                            CRFSegmenterInstance.getInstance().getSegmenter()
+                                    )),
+                            configuration));
+        } else if (CRFNERecognizerInstance.getInstance().getRecognizer() == null) {
+            return new TokenStreamComponents(
+                    TokenizerBuilder.tokenizer(
+                            AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                    new CRFLexicalAnalyzer(
+                                            CRFSegmenterInstance.getInstance().getSegmenter(),
+                                            CRFPOSTaggerInstance.getInstance().getTagger()
+                                    )),
+                            configuration));
+        } else {
+            return new TokenStreamComponents(
+                    TokenizerBuilder.tokenizer(
+                            AccessController.doPrivileged((PrivilegedAction<Segment>) () ->
+                                    new CRFLexicalAnalyzer(
+                                            CRFSegmenterInstance.getInstance().getSegmenter(),
+                                            CRFPOSTaggerInstance.getInstance().getTagger(),
+                                            CRFNERecognizerInstance.getInstance().getRecognizer()
+                                    )),
+                            configuration));
+        }
     }
 }
