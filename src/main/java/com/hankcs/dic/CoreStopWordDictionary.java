@@ -6,6 +6,7 @@ import com.hankcs.hanlp.corpus.io.IOUtil;
 import com.hankcs.hanlp.dictionary.stopword.Filter;
 import com.hankcs.hanlp.dictionary.stopword.StopWordDictionary;
 import com.hankcs.hanlp.seg.common.Term;
+import com.hankcs.hanlp.utility.Predefine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -13,6 +14,7 @@ import org.elasticsearch.core.internal.io.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -70,8 +72,9 @@ public class CoreStopWordDictionary {
     }
 
     static {
-        ByteArray byteArray = AccessController.doPrivileged((PrivilegedAction<ByteArray>) () ->
-                ByteArray.createByteArray(Config.CoreStopWordDictionaryPath + ".bin"));
+        ByteArray byteArray = isNeedUpdate() ? null :
+                AccessController.doPrivileged((PrivilegedAction<ByteArray>) () ->
+                        ByteArray.createByteArray(Config.CoreStopWordDictionaryPath + Predefine.BIN_EXT));
         if (byteArray == null) {
             try {
                 dictionary = AccessController.doPrivileged((PrivilegedAction<StopWordDictionary>) () -> {
@@ -110,6 +113,25 @@ public class CoreStopWordDictionary {
         } finally {
             IOUtils.closeWhileHandlingException(out);
         }
+    }
+
+    private static boolean isNeedUpdate() {
+        File binFile = new File(Config.CoreStopWordDictionaryPath + Predefine.BIN_EXT);
+        if (!AccessController.doPrivileged((PrivilegedAction<Boolean>) binFile::exists)) {
+            return true;
+        }
+        File txtFile = new File(Config.CoreStopWordDictionaryPath);
+        if (!AccessController.doPrivileged((PrivilegedAction<Boolean>) txtFile::exists)) {
+            logger.error("can not find stop word dictionary from [{}]", Config.CoreStopWordDictionaryPath);
+            throw new IllegalArgumentException("can not find stop word dictionary from [" + Config.CoreStopWordDictionaryPath + "]");
+        }
+        long binLastModified = binFile.lastModified();
+        long txtLastModified = txtFile.lastModified();
+        if (txtLastModified >= binLastModified) {
+            AccessController.doPrivileged((PrivilegedAction<Boolean>) binFile::delete);
+            return true;
+        }
+        return false;
     }
 }
 
