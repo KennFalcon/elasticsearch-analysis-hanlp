@@ -75,7 +75,8 @@ forbiddenApisMain {
                 '**/RemoteDictConfig.class',
                 '**/DictionaryFileCache.class',
                 '**/ExtMonitor.class',
-                '**/model/*.class'
+                '**/model/*.class',
+                '**/CoreStopWordDictionary.class'
     ]
 }
 
