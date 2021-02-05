@@ -27,6 +27,7 @@ HanLP Analyzer for ElasticSearch
 13. 在7.6.0版本后复原增加crf分词方式，不再采用CRFSegment，而是采用CRFLexicalAnalyzer进行分词，模型使用类似NLP方式采用单例实现
 14. 在7.6.0版本后，ES在启动时增加了analyzer校验，所以若没有配置NLP或CRF模型，则启动插件时就不会加载，若要使用两种分词方式，需要添加模型后重启ES
 15. 若要使用NLP或CRF分词方式，则配置文件hanlp.properties中模型路径配置中的文件名必须和实际名称一致（bin or txt），目前默认配置为data-for-1.7.5.zip（该数据包可在HanLP项目中下载）中的模型路径
+16. 分支结构重新规范，目前提供更新维护的主要是master、7.x、6.x分支，5.x和2.x因个人精力有限不频繁做更新迭代
 
 最后还是要说，开源不易，有空还是会跟进改动
 
@@ -37,7 +38,6 @@ HanLP Analyzer for ElasticSearch
 
 | Plugin version | Branch version  |
 | :------------- | :-------------- |
-| master         | 7.x             |
 | 7.x            | 7.x             |
 | 6.x            | 6.x             |
 
