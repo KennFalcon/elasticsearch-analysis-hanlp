@@ -70,13 +70,13 @@ checkstyleMain {
 
 forbiddenApisMain {
     excludes = [
-                '**/AnalysisHanLPPlugin.class',
-                '**/PorterStemmer.class',
-                '**/RemoteDictConfig.class',
-                '**/DictionaryFileCache.class',
-                '**/ExtMonitor.class',
-                '**/model/*.class',
-                '**/CoreStopWordDictionary.class'
+            '**/AnalysisHanLPPlugin.class',
+            '**/PorterStemmer.class',
+            '**/RemoteDictConfig.class',
+            '**/DictionaryFileCache.class',
+            '**/ExtMonitor.class',
+            '**/model/*.class',
+            '**/CoreStopWordDictionary.class'
     ]
 }
 
@@ -100,12 +100,12 @@ validateNebulaPom {
     validateNebulaPom.enabled = false
 }
 
-test {
-    systemProperty 'tests.security.manager', 'false'
+loggerUsageCheck {
+    loggerUsageCheck.enabled = false
 }
 
-integTest {
-    integTest.enabled = false
+test {
+    systemProperty 'tests.security.manager', 'false'
 }
 
 testingConventions {
