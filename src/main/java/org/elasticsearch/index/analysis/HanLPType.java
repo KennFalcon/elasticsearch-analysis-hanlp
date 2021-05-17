@@ -1,10 +1,10 @@
 package org.elasticsearch.index.analysis;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: Hanlp分词类型
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: Hanlp分词类型
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public enum HanLPType {
     /**
@@ -24,6 +24,10 @@ public enum HanLPType {
      */
     NLP,
     /**
+     * CRF分词
+     */
+    CRF,
+    /**
      * N-最短路分词
      */
     N_SHORT,
@@ -31,10 +35,6 @@ public enum HanLPType {
      * 最短路分词
      */
     DIJKSTRA,
-    /**
-     * CRF分词
-     */
-    CRF,
     /**
      * 极速词典分词
      */

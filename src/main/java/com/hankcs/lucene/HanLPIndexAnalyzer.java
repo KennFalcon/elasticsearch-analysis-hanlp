@@ -9,30 +9,33 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * @project: elasticsearch-analysis-hanlp
- * @description: 索引分析器
- * @author: Kenn
- * @create: 2018-12-14 15:10
+ * Project: elasticsearch-analysis-hanlp
+ * Description: 索引分析器
+ * Author: Kenn
+ * Create: 2018-12-14 15:10
  */
 public class HanLPIndexAnalyzer extends Analyzer {
     /**
      * 分词配置
      */
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public HanLPIndexAnalyzer(Configuration configuration) {
-        this.configuration = configuration;
-        this.configuration.enableIndexMode(true);
-    }
-
-    public HanLPIndexAnalyzer() {
         super();
+        this.configuration = configuration;
+        enableConfiguration();
     }
 
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName) {
         return new Analyzer.TokenStreamComponents(
-            TokenizerBuilder.tokenizer(AccessController.doPrivileged((PrivilegedAction<Segment>)() ->
-                HanLP.newSegment().enableIndexMode(true)), configuration));
+                TokenizerBuilder.tokenizer(
+                        AccessController.doPrivileged(
+                                (PrivilegedAction<Segment>) () -> HanLP.newSegment().enableIndexMode(true)),
+                        configuration));
+    }
+
+    private void enableConfiguration() {
+        this.configuration.enableIndexMode(true);
     }
 }
