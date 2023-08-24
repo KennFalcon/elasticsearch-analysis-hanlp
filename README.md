@@ -50,7 +50,9 @@ HanLP Analyzer for ElasticSearch
 
 方式一
 
-a. 下载对应的release安装包，最新release包可从baidu盘下载（链接:https://pan.baidu.com/s/1mFPNJXgiTPzZeqEjH_zifw  密码:i0o7）
+a. ~~下载对应的release安装包，最新release包可从baidu盘下载~~ baidu盘因zip包存在问题，不再提供下载
+
+b. 下载对应的release安装包，最新release包从mega下载（链接:https://mega.nz/folder/DZZX3CQT#buyPsia0-fvlphZHPyrtCw）
 
 b. 执行如下命令安装，其中PATH为插件包绝对路径：
 
