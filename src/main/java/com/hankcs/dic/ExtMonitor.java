@@ -63,7 +63,7 @@ public class ExtMonitor implements Runnable {
             DictionaryFileCache.writeCache();
             logger.info("finish reload hanlp custom dictionary");
         } else {
-            logger.info("hanlp custom dictionary isn't modified, so no need reload");
+            logger.debug("hanlp custom dictionary isn't modified, so no need reload");
         }
     }
 
