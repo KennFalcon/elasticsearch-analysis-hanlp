@@ -1,0 +1,14 @@
+grant {
+  // HanLP data directories
+  permission java.io.FilePermission "<<ALL FILES>>", "read,write,delete";
+
+  // needed because of problems in unbound LDAP library
+  permission java.util.PropertyPermission "*", "read,write";
+
+  // classloader
+  permission java.lang.RuntimePermission "setContextClassLoader";
+  permission java.lang.RuntimePermission "getClassLoader";
+
+  // socket
+  permission java.net.SocketPermission "*", "connect,resolve";
+};
