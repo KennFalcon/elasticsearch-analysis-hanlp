@@ -1,0 +1,9 @@
+ALL-UNNAMED:
+  - outbound_network
+  - files:
+    - relative_path: "plugins/analysis-hanlp/hanlp.cache"
+      relative_to: home
+      mode: read_write
+    - relative_path: "plugins/analysis-hanlp/data/"
+      relative_to: home
+      mode: read_write

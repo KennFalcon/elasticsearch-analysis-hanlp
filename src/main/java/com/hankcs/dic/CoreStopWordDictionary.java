@@ -10,7 +10,7 @@ import com.hankcs.hanlp.utility.Predefine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.elasticsearch.core.internal.io.IOUtils;
+import org.elasticsearch.core.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;

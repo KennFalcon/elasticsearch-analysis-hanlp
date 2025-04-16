@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath "org.elasticsearch.gradle:build-tools:${elasticsearchVersion}"
@@ -28,14 +27,6 @@ jar {
     archiveBaseName.set(rootProject.name)
 }
 
-javadocJar {
-    archiveBaseName.set(rootProject.name)
-}
-
-sourcesJar {
-    archiveBaseName.set(rootProject.name)
-}
-
 assemble {
     doLast {
         file("build/distributions/analysis-hanlp-${elasticsearchVersion}.zip").renameTo(file("build/distributions/${rootProject.name}-${elasticsearchVersion}.zip"))
@@ -43,75 +34,55 @@ assemble {
     }
 }
 
-configurations.all() {
-    Configuration configuration ->
-        configuration.resolutionStrategy.failOnVersionConflict()
-        configuration.resolutionStrategy.force(['commons-codec:commons-codec:1.15'])
-        configuration.resolutionStrategy.force(['commons-logging:commons-logging:1.2'])
-        configuration.resolutionStrategy.force(['org.apache.httpcomponents:httpclient:4.5.13'])
-        configuration.resolutionStrategy.force(['org.apache.httpcomponents:httpcore:4.4.14'])
+configurations.all {
+    resolutionStrategy {
+        failOnVersionConflict()
+        eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'commons-codec') {
+                details.useVersion('1.15')
+            }
+            if (details.requested.group == 'commons-logging') {
+                details.useVersion('1.2')
+            }
+            if (details.requested.group == 'org.apache.httpcomponents' && details.requested.name == 'httpcore') {
+                details.useVersion('4.4.16')
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.aliyun.com/repository/public' }
 }
 
 dependencies {
-    compile 'com.hankcs:hanlp:portable-1.7.8'
-    compile 'commons-codec:commons-codec:1.15'
-    compile 'commons-logging:commons-logging:1.2'
-    compile 'org.apache.httpcomponents:httpclient:4.5.13'
-    compile 'org.apache.httpcomponents:httpcore:4.4.14'
-}
-
-checkstyle {
-    sourceSets = [project.sourceSets.main]
-}
-
-checkstyleMain {
-    excludes = ['**/PorterStemmer.java']
-}
-
-forbiddenApisMain {
-    excludes = [
-            '**/AnalysisHanLPPlugin.class',
-            '**/PorterStemmer.class',
-            '**/RemoteDictConfig.class',
-            '**/DictionaryFileCache.class',
-            '**/ExtMonitor.class',
-            '**/model/*.class',
-            '**/CoreStopWordDictionary.class'
-    ]
-}
-
-forbiddenPatterns {
-    forbiddenPatterns.enabled = false;
-}
-
-licenseHeaders {
-    licenseHeaders.enabled = false
-}
-
-dependencyLicenses {
-    dependencyLicenses.enabled = false
-}
-
-thirdPartyAudit {
-    thirdPartyAudit.enabled = false
-}
-
-validateNebulaPom {
-    validateNebulaPom.enabled = false
-}
-
-loggerUsageCheck {
-    loggerUsageCheck.enabled = false
+    implementation 'com.hankcs:hanlp:portable-1.8.6'
+    implementation 'commons-codec:commons-codec:1.15'
+    implementation 'commons-logging:commons-logging:1.2'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    implementation 'org.apache.httpcomponents:httpcore:4.4.16'
 }
 
 test {
     systemProperty 'tests.security.manager', 'false'
 }
 
-testingConventions {
-    testingConventions.enabled = false
+// 生成 Javadoc JAR
+task javadocJar(type: Jar) {
+    dependsOn javadoc
+    archiveClassifier.set('javadoc')
+    from javadoc.destinationDir
 }
 
-javadoc {
-    enabled = false
+// 生成源码 JAR
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
 }

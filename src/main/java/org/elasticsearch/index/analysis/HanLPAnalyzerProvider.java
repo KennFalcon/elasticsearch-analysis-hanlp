@@ -25,7 +25,7 @@ public class HanLPAnalyzerProvider extends AbstractIndexAnalyzerProvider<Analyze
     private final Analyzer analyzer;
 
     public HanLPAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings, HanLPType hanLPType) {
-        super(indexSettings, name, settings);
+        super(name, settings);
         Configuration configuration = new Configuration(env, settings);
         switch (hanLPType) {
             case HANLP:

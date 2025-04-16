@@ -1,7 +1,7 @@
 package com.hankcs.cfg;
 
 import com.hankcs.dic.Dictionary;
-import org.elasticsearch.common.inject.Inject;
+import org.elasticsearch.injection.guice.Inject;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
 
